@@ -1,25 +1,26 @@
-package edu.xjtlu.cpt403.model;
+package edu.xjtlu.cpt403.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User {
-    private int idNumber;
+public abstract class User implements Comparable<User>, Serializable {
+    private int id;
     private String name;
 
     public User() {
     }
 
-    public User(int idNumber, String name) {
-        this.idNumber = idNumber;
+    public User(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public int getIdNumber() {
-        return idNumber;
+    public int getId() {
+        return id;
     }
 
-    public void setIdNumber(int idNumber) {
-        this.idNumber = idNumber;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -35,19 +36,24 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return idNumber == user.idNumber && Objects.equals(name, user.name);
+        return id == user.id && Objects.equals(name, user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idNumber, name);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "idNumber=" + idNumber +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return Integer.compare(this.id, o.id);
     }
 }

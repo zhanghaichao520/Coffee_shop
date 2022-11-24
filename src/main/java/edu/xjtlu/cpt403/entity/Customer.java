@@ -1,8 +1,6 @@
-package edu.xjtlu.cpt403.model;
+package edu.xjtlu.cpt403.entity;
 
 import edu.xjtlu.cpt403.enums.Loyalty;
-
-import java.util.Objects;
 
 public class Customer extends User {
 
