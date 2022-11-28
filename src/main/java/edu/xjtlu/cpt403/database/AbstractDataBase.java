@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDataBase<T> {
-    final String path = "src/main/resources/User.xlsx";
+    final String path = "src/main/resources/Database.xlsx";
     abstract List<T> selectAll() throws Exception;
 
     abstract boolean insert(T object, boolean idIncrAuto) throws Exception;
