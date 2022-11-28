@@ -1,5 +1,6 @@
 package edu.xjtlu.cpt403.entity;
 
+
 import java.util.Objects;
 
 public class Customer extends User {
@@ -19,11 +20,6 @@ public class Customer extends User {
      * */
     private int loyaltyCard;
 
-    /** Customer account password*/
-    private String passWord;
-
-    /** Customer phone number*/
-    private String phoneNumber;
 
     public String getGender() {
         return gender;
@@ -49,23 +45,6 @@ public class Customer extends User {
         this.loyaltyCard = loyaltyCard;
     }
 
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-
 
     @Override
     public String toString() {
@@ -73,8 +52,6 @@ public class Customer extends User {
                 ", gender='" + gender + '\'' +
                 ", isVip=" + isVip +
                 ", loyaltyCard=" + loyaltyCard +
-                ", passWord='" + passWord + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 
@@ -84,11 +61,15 @@ public class Customer extends User {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Customer customer = (Customer) o;
-        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard && Objects.equals(gender, customer.gender) && Objects.equals(passWord, customer.passWord) && Objects.equals(phoneNumber, customer.phoneNumber);
+
+        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard  && Objects.equals(gender, customer.gender) ;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), gender, isVip, loyaltyCard, passWord, phoneNumber);
+
+
+        return Objects.hash(super.hashCode(), gender, isVip, loyaltyCard);
     }
 }
