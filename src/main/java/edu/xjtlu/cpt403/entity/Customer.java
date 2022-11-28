@@ -1,9 +1,12 @@
 package edu.xjtlu.cpt403.entity;
 
 import edu.xjtlu.cpt403.enums.Loyalty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.Objects;
-
+@Data
+@AllArgsConstructor
 public class Customer extends User {
 
     private Loyalty loyalty;
@@ -14,9 +17,6 @@ public class Customer extends User {
 
     private int loyaltyCard;
 
-    private String passWord;
-
-    private String phoneNumber;
 
     public String getGender() {
         return gender;
@@ -40,22 +40,6 @@ public class Customer extends User {
 
     public void setLoyaltyCard(int loyaltyCard) {
         this.loyaltyCard = loyaltyCard;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public Customer(Loyalty loyalty) {
@@ -82,8 +66,6 @@ public class Customer extends User {
                 ", gender='" + gender + '\'' +
                 ", isVip=" + isVip +
                 ", loyaltyCard=" + loyaltyCard +
-                ", passWord='" + passWord + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 
@@ -93,11 +75,11 @@ public class Customer extends User {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Customer customer = (Customer) o;
-        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard && loyalty == customer.loyalty && Objects.equals(gender, customer.gender) && Objects.equals(passWord, customer.passWord) && Objects.equals(phoneNumber, customer.phoneNumber);
+        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard && loyalty == customer.loyalty && Objects.equals(gender, customer.gender) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), loyalty, gender, isVip, loyaltyCard, passWord, phoneNumber);
+        return Objects.hash(super.hashCode(), loyalty, gender, isVip, loyaltyCard);
     }
 }

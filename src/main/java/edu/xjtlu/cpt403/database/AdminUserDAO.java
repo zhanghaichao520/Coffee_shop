@@ -14,14 +14,17 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
     final String sheetName = "AdminUser";
 
     public static void main(String[] args) throws Exception {
-        AdminUserDAO dao = new AdminUserDAO();
-        List<AdminUser> result = dao.selectAll();
-        System.out.println(JSON.toJSONString(result));
+//        AdminUserDAO dao = new AdminUserDAO();
+//        List<AdminUser> result = dao.selectAll();
+//        System.out.println(JSON.toJSONString(result));
+//
+//        System.out.println(dao.insert(new AdminUser(0, "haichao", "123456", "1828888888"), true));
+//
+//        result = dao.selectAll();
+//        System.out.println(JSON.toJSONString(result));
+        System.out.println(AdminUser.class.getSuperclass().getSimpleName());
 
-        System.out.println(dao.insert(new AdminUser(0, "zhaoyang"), true));
-
-        result = dao.selectAll();
-        System.out.println(JSON.toJSONString(result));
+        System.out.println(AdminUser.class.getSimpleName());
 
     }
 
