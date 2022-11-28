@@ -4,8 +4,10 @@ import java.util.Objects;
 
 public class AdminUser extends User{
 
+    /** AdminUser account password */
     private String passWord;
 
+    /** AdminUser phone number*/
     private String phoneNumber;
 
     public AdminUser() {
