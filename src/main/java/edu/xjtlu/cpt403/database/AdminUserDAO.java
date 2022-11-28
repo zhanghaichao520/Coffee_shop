@@ -11,20 +11,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdminUserDAO extends AbstractDataBase<AdminUser> {
-    final String sheetName = "AdminUser";
+    final String sheetName = AdminUser.class.getSimpleName();
 
     public static void main(String[] args) throws Exception {
-//        AdminUserDAO dao = new AdminUserDAO();
-//        List<AdminUser> result = dao.selectAll();
-//        System.out.println(JSON.toJSONString(result));
+        AdminUserDAO dao = new AdminUserDAO();
+        List<AdminUser> result = dao.selectAll();
+        System.out.println(JSON.toJSONString(result));
 //
 //        System.out.println(dao.insert(new AdminUser(0, "haichao", "123456", "1828888888"), true));
-//
+
 //        result = dao.selectAll();
 //        System.out.println(JSON.toJSONString(result));
-        System.out.println(AdminUser.class.getSuperclass().getSimpleName());
-
-        System.out.println(AdminUser.class.getSimpleName());
 
     }
 
@@ -46,7 +43,7 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
     }
 
     @Override
-    boolean insert(AdminUser object, boolean idIncrAuto) throws Exception {
+    public boolean insert(AdminUser object, boolean idIncrAuto) throws Exception {
         if (idIncrAuto) {
              object.setId(selectAll().size() + 1);
         }
@@ -57,6 +54,21 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean delete(AdminUser object) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean update(int id, AdminUser object) throws Exception {
+        return false;
+    }
+
+    @Override
+    public AdminUser select(int id) throws Exception {
+        return null;
     }
 
 

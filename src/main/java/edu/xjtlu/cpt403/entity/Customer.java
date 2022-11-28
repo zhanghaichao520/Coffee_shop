@@ -45,6 +45,16 @@ public class Customer extends User {
         this.loyaltyCard = loyaltyCard;
     }
 
+    public Customer() {
+    }
+
+
+    public Customer(int id, String name, String passWord, String phoneNumber, String gender, int isVip, int loyaltyCard) {
+        super(id, name, passWord, phoneNumber);
+        this.gender = gender;
+        this.isVip = isVip;
+        this.loyaltyCard = loyaltyCard;
+    }
 
     @Override
     public String toString() {

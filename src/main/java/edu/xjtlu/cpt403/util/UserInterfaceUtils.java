@@ -1,43 +1,23 @@
-package edu.xjtlu.cpt403;
+package edu.xjtlu.cpt403.util;
 
-import entity.Person;
-import universitysystem.UniversityDatabase;
+import edu.xjtlu.cpt403.entity.User;
 
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.function.Function;
 
-public class CoffeeShopUI {
+public class UserInterfaceUtils {
 
+    private static User currentUser;
 
-    static Scanner keyboard;
-
-    public static void run(UniversityDatabase db) {
-        keyboard = new Scanner(System.in);
-        System.out.println("Welcome to the Our Coffee Shop!");
-        String[] options = {
-                "Exit.",
-                "Guest.",
-                "Customer.",
-                "Administration."
-        };
-        int choice;
-        do {
-            choice = showOptionsAndGetChoice(options, 0);
-            switch (choice) {
-                case 1 -> db.view();
-                case 2 -> db.view();
-                case 3 -> {
-                    ArrayList<Person> removed = db.updateAtEndOfYear();
-                    for (Person p : removed) {
-                        System.out.println("Person " + p + " removed from database.");
-                    }
-                }
-            }
-        }
-        while (choice != 0);
-        keyboard.close();
+    public static User getCurrentUser() {
+        return currentUser;
     }
 
+    public static void setCurrentUser(User currentUser) {
+        UserInterfaceUtils.currentUser = currentUser;
+    }
+
+    static Scanner keyboard = new Scanner(System.in);;
     //shows the user a list of options from an array, and gets their preferred choice
     //offset = 0 if you want to start numbering options at 0, 1 if you want to start at 1
     public static int showOptionsAndGetChoice(String[] options, int offset) {
@@ -64,6 +44,28 @@ public class CoffeeShopUI {
             return getIntInput(lower, upper);
         }
         return number;
+    }
+
+    public static String getStringInput(String hint, Function<String, Boolean> validateFunction) {
+        System.out.println(hint);
+        String name = keyboard.nextLine();
+        try {
+            if (validateFunction != null) {
+                if (!validateFunction.apply(name)) {
+                   throw new IllegalArgumentException();
+                }
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Invalid string input, " + ex.getMessage());
+            System.out.println("Please try again.");
+            return getStringInput(hint, validateFunction);
+        }
+        return name;
+    }
+
+    public static void close() {
+        keyboard.close();
     }
 
 }
