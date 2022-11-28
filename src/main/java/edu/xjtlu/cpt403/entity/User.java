@@ -7,6 +7,9 @@ public abstract class User implements Comparable<User>, Serializable {
     private int id;
     private String name;
 
+
+
+
     public User() {
     }
 
@@ -31,17 +34,10 @@ public abstract class User implements Comparable<User>, Serializable {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(name, user.name);
-    }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public int compareTo(User o) {
+        return Integer.compare(this.id, o.id);
     }
 
     @Override
@@ -53,7 +49,15 @@ public abstract class User implements Comparable<User>, Serializable {
     }
 
     @Override
-    public int compareTo(User o) {
-        return Integer.compare(this.id, o.id);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
