@@ -1,20 +1,23 @@
 package edu.xjtlu.cpt403.entity;
 
-import edu.xjtlu.cpt403.enums.Loyalty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.util.Objects;
-@Data
-@AllArgsConstructor
+
 public class Customer extends User {
 
-    private Loyalty loyalty;
 
+    /** Customer Gender*/
     private String gender;
 
+    /** User is Vip or not,
+     * value=1,user is vip.
+     * value=0,user is not vip.*/
     private int isVip;
 
+    /** record number of user's purchases
+     *  one purchase can add one point
+     *  ten points can exchange product
+     * */
     private int loyaltyCard;
 
 
@@ -42,27 +45,10 @@ public class Customer extends User {
         this.loyaltyCard = loyaltyCard;
     }
 
-    public Customer(Loyalty loyalty) {
-        this.loyalty = loyalty;
-    }
-
-    public Customer(int idNumber, String name, Loyalty loyalty) {
-        super(idNumber, name);
-        this.loyalty = loyalty;
-    }
-
-    public Loyalty getLoyalty() {
-        return loyalty;
-    }
-
-    public void setLoyalty(Loyalty loyalty) {
-        this.loyalty = loyalty;
-    }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "loyalty=" + loyalty +
                 ", gender='" + gender + '\'' +
                 ", isVip=" + isVip +
                 ", loyaltyCard=" + loyaltyCard +
@@ -75,11 +61,15 @@ public class Customer extends User {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Customer customer = (Customer) o;
-        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard && loyalty == customer.loyalty && Objects.equals(gender, customer.gender) ;
+
+        return isVip == customer.isVip && loyaltyCard == customer.loyaltyCard  && Objects.equals(gender, customer.gender) ;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), loyalty, gender, isVip, loyaltyCard);
+
+
+        return Objects.hash(super.hashCode(), gender, isVip, loyaltyCard);
     }
 }

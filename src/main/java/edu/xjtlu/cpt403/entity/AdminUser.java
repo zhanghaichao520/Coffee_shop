@@ -7,6 +7,7 @@ import java.util.Objects;
 @Data
 public class AdminUser extends User{
 
+
     public AdminUser() {
     }
 

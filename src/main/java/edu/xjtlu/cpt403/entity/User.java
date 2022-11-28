@@ -7,7 +7,10 @@ import java.util.Objects;
 
 
 public abstract class User implements Comparable<User>, Serializable {
+    /** User ID*/
     private int id;
+
+    /** User Name*/
     private String name;
 
     private String passWord;
