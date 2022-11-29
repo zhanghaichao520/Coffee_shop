@@ -1,9 +1,5 @@
 package edu.xjtlu.cpt403.userinterface;
 
-import edu.xjtlu.cpt403.database.DataBaseManager;
-import edu.xjtlu.cpt403.entity.User;
-
-import static edu.xjtlu.cpt403.util.UserInterfaceUtils.getStringInput;
 import static edu.xjtlu.cpt403.util.UserInterfaceUtils.showOptionsAndGetChoice;
 
 public class CoffeeShopUI {
@@ -23,7 +19,7 @@ public class CoffeeShopUI {
             switch (choice) {
                 case 1 : guestStart(); break;
                 case 2 : customerStart(); break;
-                case 3 : administrationStart(); break;
+                case 3 : AdminstrationUI.login(); break;
             }
         }
         while (choice != 0);
@@ -31,27 +27,48 @@ public class CoffeeShopUI {
     }
 
     private static void guestStart() {
+        String[] options = {
+                "Exit.",
+                "Buy Food.",
+                "Buy Drink.",
+                "Register Account."
+        };
+        int choice;
+        do {
+            choice = showOptionsAndGetChoice(options, 0);
+            switch (choice) {
+                case 1 : FoodUI.buyFood(); break;
+                case 2 : DrinkUI.buyDrink(); break;
+                case 3 : CustomerUI.regist(); break;
+            }
+        }
+        while (choice != 0);
 
     }
 
     private static void customerStart() {
-
-    }
-
-    private static void administrationStart() {
-        String username = getStringInput("Please input the admin username", s -> User.validateName(s));
-        String password = getStringInput("Please input the admin password", s -> User.validatePassword(s));
-
-        try {
-            User.validateLogin(username, password, DataBaseManager.getAdminUserDAO());
-        } catch (IllegalArgumentException ex) {
-            System.out.println(ex.getMessage() + ", Please try again.");
-            administrationStart();
-            return;
+        String[] options = {
+                "Exit.",
+                "Login.",
+                "Register Account.",
+                "change password.",
+                "Cancellation Account."
+        };
+        int choice;
+        do {
+            choice = showOptionsAndGetChoice(options, 0);
+            switch (choice) {
+                case 1 : CustomerUI.login(); break;
+                case 2 : CustomerUI.regist(); break;
+                case 3 : CustomerUI.changePassword(); break;
+                case 4 : CustomerUI.cancellation(); break;
+            }
         }
+        while (choice != 0);
 
-        AdminstrationUI.run(username);
-
+        // 退出的时候， 顺便把账号也退出登录
+        CustomerUI.exitLogin();
     }
+
 
 }
