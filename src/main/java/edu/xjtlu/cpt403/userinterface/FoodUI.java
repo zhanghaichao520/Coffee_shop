@@ -6,7 +6,9 @@ public class FoodUI {
      * 查询所有食物
      */
     public static void queryFood() {
+        /// code
 
+        // code2
     }
 
     /**

@@ -30,7 +30,7 @@ public class UserInterfaceUtils {
 
     //gets a number between lower and upper from the user
     public static int getIntInput(int lower, int upper) {
-        String input = keyboard.nextLine().strip();
+        String input = keyboard.nextLine().trim();
         int number = 0;
         try {
             number = Integer.parseInt(input);
