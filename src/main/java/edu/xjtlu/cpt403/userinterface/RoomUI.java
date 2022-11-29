@@ -105,6 +105,7 @@ public class RoomUI {
         System.out.println("Let's start queryReservation room");
 
         RoomDAO roomDAO = DataBaseManager.getRoomDAO();
+
         try {
             List<Room> roomList = roomDAO.selectAll();
             if (CollectionUtils.isEmpty(roomList)) {
@@ -140,7 +141,7 @@ public class RoomUI {
         queryReservation();
 
         // 2. 让用户输入需要取消预定的房间号,可以对用户的输入进行校验， 也可以不校验（第二个参数直接传入null）
-        String roomNumber = UserInterfaceUtils.getStringInput("Please enter the room number you want to reserve", new Function<String, Boolean>() {
+        String roomNumber = UserInterfaceUtils.getStringInput("Please enter the room number you want to cancel", new Function<String, Boolean>() {
             @Override
             public Boolean apply(String s) {
                 // 校验参数逻辑， 比如输入不合法就返回false,或者抛异常

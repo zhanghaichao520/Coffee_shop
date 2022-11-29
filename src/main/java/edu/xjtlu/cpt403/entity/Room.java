@@ -1,9 +1,12 @@
 package edu.xjtlu.cpt403.entity;
 
 import edu.xjtlu.cpt403.database.RoomDAO;
+import edu.xjtlu.cpt403.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Date;
 
 public class Room implements Comparable<Room>, Serializable {
     private int id;
@@ -83,8 +86,10 @@ public class Room implements Comparable<Room>, Serializable {
                 ", bookDate='" + bookDate + '\'' +
                 ", bookUserid=" + bookUserid +
                 ", maxCapacity=" + maxCapacity +
+                ", status=" + (bookUserid != 0 && bookDate .equals(DateUtils.getDate(new Date()))  ? "Reserved" : "Available" ) +
                 '}';
     }
+
 
     /**
      * 检测房间是否可以被预定

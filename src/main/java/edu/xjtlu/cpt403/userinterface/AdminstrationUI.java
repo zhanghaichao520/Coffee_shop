@@ -19,9 +19,10 @@ public class AdminstrationUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 -> inventoryManagement();
-                case 2 -> purchaseGoods();
-                case 3 -> bookRoom();
+                case 1 : inventoryManagement(); break;
+                case 2 : purchaseGoods(); break;
+                case 3 : bookRoom();
+                break;
             }
         }
         while (choice != 0);
@@ -38,9 +39,9 @@ public class AdminstrationUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 -> RoomUI.newReservation();
-                case 2 -> RoomUI.queryReservation();
-                case 3 -> RoomUI.cancelReservation();
+                case 1 : RoomUI.newReservation(); break;
+                case 2 : RoomUI.queryReservation(); break;
+                case 3 : RoomUI.cancelReservation(); break;
             }
         }
         while (choice != 0);
@@ -56,8 +57,9 @@ public class AdminstrationUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 -> FoodUI.buyFood();
-                case 2 -> DrinkUI.buyDrink();
+                case 1 : FoodUI.buyFood(); break;
+                case 2 : DrinkUI.buyDrink();
+                break;
             }
         }
         while (choice != 0);
@@ -79,14 +81,14 @@ public class AdminstrationUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 -> FoodUI.queryFood();
-                case 2 -> FoodUI.addFood();
-                case 3 -> FoodUI.updateFood();
-                case 4 -> FoodUI.removeFood();
-                case 5 -> DrinkUI.queryDrink();
-                case 6 -> DrinkUI.addDrink();
-                case 7 -> DrinkUI.updateDrink();
-                case 8 -> DrinkUI.removeDrink();
+                case 1 : FoodUI.queryFood(); break;
+                case 2 : FoodUI.addFood(); break;
+                case 3 : FoodUI.updateFood(); break;
+                case 4 : FoodUI.removeFood(); break;
+                case 5 : DrinkUI.queryDrink(); break;
+                case 6 : DrinkUI.addDrink(); break;
+                case 7 : DrinkUI.updateDrink(); break;
+                case 8 : DrinkUI.removeDrink(); break;
             }
         }
         while (choice != 0);

@@ -10,7 +10,7 @@ public class CoffeeShopUI {
 
     public static void run() {
 
-        System.out.println("Welcome to the Our Coffee Shop!");
+        System.out.println("Welcome to Our Coffee Shop!");
         String[] options = {
                 "Exit.",
                 "Guest.",
@@ -21,9 +21,9 @@ public class CoffeeShopUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 -> guestStart();
-                case 2 -> customerStart();
-                case 3 -> administrationStart();
+                case 1 : guestStart(); break;
+                case 2 : customerStart(); break;
+                case 3 : administrationStart(); break;
             }
         }
         while (choice != 0);
