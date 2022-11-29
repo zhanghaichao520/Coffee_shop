@@ -33,6 +33,7 @@ public class CustomerUI {
 
         String[] options = {
                 "Exit.",
+                "Become VIP.",
                 "Buy Food.",
                 "Buy Drink.",
                 "Reservation room.",
@@ -44,10 +45,11 @@ public class CustomerUI {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
                 case 1 : FoodUI.buyFood(); break;
-                case 2 : DrinkUI.buyDrink(); break;
-                case 3 : RoomUI.newReservation(); break;
-                case 4 : RoomUI.queryReservation(); break;
-                case 5 : RoomUI.cancelReservation(); break;
+                case 2 : FoodUI.buyFood(); break;
+                case 3 : DrinkUI.buyDrink(); break;
+                case 4 : RoomUI.newReservation(); break;
+                case 5 : RoomUI.queryReservation(); break;
+                case 6 : RoomUI.cancelReservation(); break;
 
             }
         }
@@ -60,6 +62,7 @@ public class CustomerUI {
      */
     public static void regist() {
 
+        // 核心 customer  插入数据
     }
 
 
@@ -69,7 +72,7 @@ public class CustomerUI {
      *  然后重复输入两次新密码， 更新数据库，然后提示修改成功
      */
     public static void changePassword() {
-
+        // 核心 customer  修改密码字段
     }
 
     /**
@@ -79,8 +82,16 @@ public class CustomerUI {
      * 记得还要把所有关联预定房间也都取消掉
      */
     public static void cancellation() {
-
+        // 核心 customer  删除记录
     }
+
+    /**
+     * 开通会员流程
+     */
+    public static void becomeVip() {
+        // 核心 customer  修改VIP字段
+    }
+
 
     /**
      * 退出登录
