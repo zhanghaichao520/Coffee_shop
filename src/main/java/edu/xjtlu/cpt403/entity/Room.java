@@ -1,12 +1,16 @@
 package edu.xjtlu.cpt403.entity;
 
+import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.database.RoomDAO;
 import edu.xjtlu.cpt403.util.DateUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Room implements Comparable<Room>, Serializable {
     private int id;
@@ -86,28 +90,59 @@ public class Room implements Comparable<Room>, Serializable {
                 ", bookDate='" + bookDate + '\'' +
                 ", bookUserid=" + bookUserid +
                 ", maxCapacity=" + maxCapacity +
-                ", status=" + (bookUserid != 0 && bookDate .equals(DateUtils.getDate(new Date()))  ? "Reserved" : "Available" ) +
+                ", status=" + (isAvailable()  ? "Available" : "Reserved"  ) +
                 '}';
     }
 
+    public static List<Room> getReservedRoomByUserId(int userId) {
+        List<Room> result = new ArrayList<>();
+        try {
+            List<Room> roomList = DataBaseManager.getRoomDAO().selectAll();
+            if (CollectionUtils.isEmpty(roomList)) {
+                return result;
+            }
+            for (Room room : roomList) {
+                if(room.isAvailable()) {
+                    continue;
+                }
+                if (userId == room.getBookUserid()) {
+                    result.add(room);
+                }
+            }
+        } catch (Exception e) {
+            return result;
+        }
+
+        return result;
+    }
 
     /**
      * 检测房间是否可以被预定
-     * @param id
      * @return
      */
-    public static boolean checkReservation(int id, RoomDAO roomDAO) throws Exception {
-        // todo: 检测数据库是否存在
-//        if (roomDAO.select(id) == null) {
-//            throw new IllegalArgumentException("room not exist");
-//        }
-        if (id == 0) {
-            throw new IllegalArgumentException("room not exist");
+    public boolean isAvailable() {
+
+        try {
+            // 检测数据库是否存在该房间
+            if (DataBaseManager.getRoomDAO().select(id) == null) {
+                return false;
+            }
+
+            // 检测预定的用户是否存在
+            if (DataBaseManager.getCustomerDAO().select(id) == null) {
+                return false;
+            }
+
+            // 如果预定的日期是今天， 那么也是 unavailable
+            if (bookDate.equals(DateUtils.getDate(new Date()))) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
         }
 
-        // todo:  检测数据库是否被别人定了
-
-        return true;
     }
 
     @Override
