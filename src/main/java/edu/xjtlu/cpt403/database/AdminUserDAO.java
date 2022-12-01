@@ -2,8 +2,10 @@ package edu.xjtlu.cpt403.database;
 
 import com.alibaba.fastjson.JSON;
 import edu.xjtlu.cpt403.entity.AdminUser;
+import edu.xjtlu.cpt403.entity.Customer;
 import edu.xjtlu.cpt403.util.ExcelUtils;
 import edu.xjtlu.cpt403.util.RowData;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -68,7 +70,18 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
 
     @Override
     public AdminUser select(int id) throws Exception {
-        return null;
+        List<AdminUser> adminUsers = selectAll();
+        if (CollectionUtils.isEmpty(adminUsers)) {
+            throw new Exception("our system adminUsers is empty! ");
+        }
+
+        for (AdminUser adminUser : adminUsers) {
+            if (id == adminUser.getId()) {
+                return adminUser;
+            }
+        }
+
+        throw new Exception("adminUser id = " + id + " not find in our system");
     }
 
 
