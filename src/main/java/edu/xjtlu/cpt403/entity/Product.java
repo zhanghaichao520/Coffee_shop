@@ -13,6 +13,17 @@ public abstract class Product implements Comparable<Product>, Serializable {
 
     private int sellAmount;
 
+    public Product() {
+    }
+
+    public Product(String name, double price, int id, int stockAvailable, int sellAmount) {
+        this.name = name;
+        this.price = price;
+        this.id = id;
+        this.stockAvailable = stockAvailable;
+        this.sellAmount = sellAmount;
+    }
+
     public String getName() {
         return name;
     }

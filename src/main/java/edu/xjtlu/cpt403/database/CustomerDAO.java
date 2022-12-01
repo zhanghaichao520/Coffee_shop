@@ -17,13 +17,17 @@ public class CustomerDAO extends AbstractDataBase<Customer> {
 
     public static void main(String[] args) throws Exception {
         CustomerDAO dao = new CustomerDAO();
+        // test select all
         List<Customer> result = dao.selectAll();
         System.out.println(JSON.toJSONString(result));
 
-        System.out.println(dao.insert(new Customer(0, "haichao", "123456", "1828888888", "unknown", 1, 9), true));
+        // test insert
+        System.out.println(dao.insert(new Customer(0, "wyw", "123456", "1828888888", "unknown", 1, 9), true));
         result = dao.selectAll();
         System.out.println(JSON.toJSONString(result));
 
+        // test select
+        System.out.println(JSON.toJSONString(dao.select(1)));
     }
 
     @Override

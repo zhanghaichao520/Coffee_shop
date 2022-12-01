@@ -1,5 +1,7 @@
 package edu.xjtlu.cpt403.entity;
 
+
+
 public class SalesRecord {
 
     /** 购买记录ID */
