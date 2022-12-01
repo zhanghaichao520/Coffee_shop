@@ -33,7 +33,16 @@ public class RoomDAO extends AbstractDataBase<Room> {
 
     @Override
     public boolean insert(Room object, boolean idIncrAuto) throws Exception {
-        return false;
+        if (idIncrAuto) {
+            object.setId(selectAll().size() + 1);
+        }
+        try {
+            ExcelUtils.insert(convert(object), path, sheetName);
+        } catch (Exception e) {
+            System.out.println("insert customer error: " + e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     @Override
