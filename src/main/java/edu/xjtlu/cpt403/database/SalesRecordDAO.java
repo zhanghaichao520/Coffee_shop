@@ -16,17 +16,23 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord>{
     }
 
     @Override
-    public boolean delete(SalesRecord object) throws Exception {
-        return false;
+    public int delete(int id) throws Exception {
+        return 0;
     }
 
     @Override
-    public boolean update(int id, SalesRecord object) throws Exception {
-        return false;
+    public int update(int id, SalesRecord object) throws Exception {
+        return 0;
     }
+
 
     @Override
     public SalesRecord select(int id) throws Exception {
+        return null;
+    }
+
+    @Override
+    protected String getSheetName() {
         return null;
     }
 }

@@ -1,12 +1,15 @@
 package edu.xjtlu.cpt403.database;
 
 import edu.xjtlu.cpt403.util.DateUtils;
+import edu.xjtlu.cpt403.util.ExcelUtils;
 import edu.xjtlu.cpt403.util.RowData;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,15 +18,39 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDataBase<T> {
-    final String path = "src/main/resources/Database.xlsx";
+    final static String path = "src/main/resources/Database.xlsx";
     public abstract List<T> selectAll() throws Exception;
 
     public abstract boolean insert(T object, boolean idIncrAuto) throws Exception;
-    public abstract boolean delete(T object) throws Exception;
 
-    public abstract boolean update(int id, T object) throws Exception;
+
+    public abstract int delete(int id) throws Exception ;
+
+    public abstract int update(int id, T object) throws Exception;
 
     public abstract T select(int id) throws Exception;
+
+    protected abstract String getSheetName();
+
+    protected int update(List<RowData> rowDataList, RowData updateData) throws IOException {
+        Map<String, Integer> colNameToColIndex = rowDataList.get(0).getColNameToColIndex();
+        // 更新所有此id的行
+        for (RowData rowData : rowDataList) {
+            int rowIndex = rowData.getRowIndex();
+            // 逐列更新
+            for (Map.Entry<String, String> entry : updateData.entrySet()) {
+                String colName = entry.getKey();
+                String colValue = entry.getValue();
+                if (!colNameToColIndex.containsKey(colName)) {
+                    continue;
+                }
+                int colIndex = colNameToColIndex.get(colName);
+                ExcelUtils.update(rowIndex, colIndex, colValue, path, getSheetName());
+            }
+        }
+
+        return rowDataList.size();
+    }
 
     RowData convert(T object) throws Exception {
         RowData rowData = new RowData();
