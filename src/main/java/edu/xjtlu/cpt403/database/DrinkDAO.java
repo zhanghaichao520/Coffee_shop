@@ -3,6 +3,7 @@ package edu.xjtlu.cpt403.database;
 import com.alibaba.fastjson.JSON;
 import edu.xjtlu.cpt403.entity.AdminUser;
 import edu.xjtlu.cpt403.entity.Customer;
+import edu.xjtlu.cpt403.entity.Drink;
 import edu.xjtlu.cpt403.util.ExcelUtils;
 import edu.xjtlu.cpt403.util.RowData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,28 +13,31 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdminUserDAO extends AbstractDataBase<AdminUser> {
-    final String sheetName = AdminUser.class.getSimpleName();
+public class DrinkDAO extends AbstractDataBase<Drink> {
+    final String sheetName = Drink.class.getSimpleName();
 
     public static void main(String[] args) throws Exception {
-        AdminUserDAO dao = new AdminUserDAO();
-        List<AdminUser> result = dao.selectAll();
+        DrinkDAO dao = new DrinkDAO();
+        // test select all
+        List<Drink> result = dao.selectAll();
         System.out.println(JSON.toJSONString(result));
-//
-//        System.out.println(dao.insert(new AdminUser(0, "haichao", "123456", "1828888888"), true));
 
-//        result = dao.selectAll();
-//        System.out.println(JSON.toJSONString(result));
+        // test insert
+        System.out.println(dao.insert(new Drink("binghongcha", 30, 0, 100, 1), true));
+        result = dao.selectAll();
+        System.out.println(JSON.toJSONString(result));
 
+        // test select
+        System.out.println(JSON.toJSONString(dao.select(1)));
     }
 
     @Override
-    public List<AdminUser> selectAll()  {
+    public List<Drink> selectAll() throws Exception {
         List<RowData> list = ExcelUtils.readAll(path, sheetName);
         return list.stream().map(rowData -> {
             try {
-                AdminUser adminUser = new AdminUser();
-                return convert(rowData, adminUser);
+                Drink drink = new Drink();
+                return convert(rowData, drink);
             } catch (IntrospectionException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
@@ -45,44 +49,42 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
     }
 
     @Override
-    public boolean insert(AdminUser object, boolean idIncrAuto) throws Exception {
+    public boolean insert(Drink object, boolean idIncrAuto) throws Exception {
         if (idIncrAuto) {
-             object.setId(selectAll().size() + 1);
+            object.setId(selectAll().size() + 1);
         }
         try {
             ExcelUtils.insert(convert(object), path, sheetName);
         } catch (Exception e) {
-            System.out.println("insert user error: " + e.getMessage());
+            System.out.println("insert customer error: " + e.getMessage());
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean delete(AdminUser object) throws Exception {
+    public boolean delete(Drink object) throws Exception {
         return false;
     }
 
     @Override
-    public boolean update(int id, AdminUser object) throws Exception {
+    public boolean update(int id, Drink object) throws Exception {
         return false;
     }
 
     @Override
-    public AdminUser select(int id) throws Exception {
-        List<AdminUser> adminUsers = selectAll();
-        if (CollectionUtils.isEmpty(adminUsers)) {
-            throw new Exception("our system adminUsers is empty! ");
+    public Drink select(int id) throws Exception {
+        List<Drink> drinkList = selectAll();
+        if (CollectionUtils.isEmpty(drinkList)) {
+            throw new Exception("our system drinkList is empty! ");
         }
 
-        for (AdminUser adminUser : adminUsers) {
-            if (id == adminUser.getId()) {
-                return adminUser;
+        for (Drink drink : drinkList) {
+            if (id == drink.getId()) {
+                return drink;
             }
         }
 
-        throw new Exception("adminUser id = " + id + " not find in our system");
+        throw new Exception("drink id = " + id + " not find in our system");
     }
-
-
 }

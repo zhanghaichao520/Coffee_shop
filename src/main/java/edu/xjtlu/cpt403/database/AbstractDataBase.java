@@ -15,10 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDataBase<T> {
-    final String path = "src/main/resources/User.xlsx";
-    abstract List<T> selectAll() throws Exception;
+    final String path = "src/main/resources/Database.xlsx";
+    public abstract List<T> selectAll() throws Exception;
 
-    abstract boolean insert(T object, boolean idIncrAuto) throws Exception;
+    public abstract boolean insert(T object, boolean idIncrAuto) throws Exception;
+    public abstract boolean delete(T object) throws Exception;
+
+    public abstract boolean update(int id, T object) throws Exception;
+
+    public abstract T select(int id) throws Exception;
 
     RowData convert(T object) throws Exception {
         RowData rowData = new RowData();
