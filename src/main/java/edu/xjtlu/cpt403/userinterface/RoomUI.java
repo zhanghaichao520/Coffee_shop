@@ -33,7 +33,6 @@ public class RoomUI {
     public static void newReservation() {
         System.out.println("=============================================================");
         System.out.println("Let's start newReservation room");
-
         // 1. 先展示所有的房间列表
         queryReservation();
 

@@ -5,7 +5,7 @@ import static edu.xjtlu.cpt403.util.UserInterfaceUtils.showOptionsAndGetChoice;
 
 public class AdminstrationUI {
 
-    public static void run(String username) {
+    public static void run(String username) throws Exception {
         System.out.println("=============================================================");
         System.out.println("Hi, " + username + " welcome to adminstration UI!");
 
@@ -47,7 +47,7 @@ public class AdminstrationUI {
         while (choice != 0);
     }
 
-    private static void purchaseGoods() {
+    private static void purchaseGoods() throws Exception {
         String[] options = {
                 "Exit.",
                 "Buy food.",
@@ -65,7 +65,7 @@ public class AdminstrationUI {
         while (choice != 0);
     }
 
-    private static void inventoryManagement() {
+    private static void inventoryManagement() throws Exception {
         String[] options = {
                 "Exit.",
                 "Query Food.",
@@ -93,6 +93,4 @@ public class AdminstrationUI {
         }
         while (choice != 0);
     }
-
-
 }
