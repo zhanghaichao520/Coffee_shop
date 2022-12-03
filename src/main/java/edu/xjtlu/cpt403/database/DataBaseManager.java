@@ -7,6 +7,7 @@ public class DataBaseManager {
     private static FoodDAO foodDAO = new FoodDAO();
     private static RoomDAO roomDAO = new RoomDAO();
 
+    private static SalesRecordDAO salesRecordDAO = new SalesRecordDAO();
 
     public static AdminUserDAO getAdminUserDAO() {
         return adminUserDAO;
@@ -26,5 +27,9 @@ public class DataBaseManager {
 
     public static RoomDAO getRoomDAO() {
         return roomDAO;
+    }
+
+    public static SalesRecordDAO getSalesRecordDAO() {
+        return salesRecordDAO;
     }
 }
