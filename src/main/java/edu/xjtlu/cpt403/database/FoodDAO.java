@@ -1,7 +1,6 @@
 package edu.xjtlu.cpt403.database;
 
 import com.alibaba.fastjson.JSON;
-import edu.xjtlu.cpt403.entity.Drink;
 import edu.xjtlu.cpt403.entity.Food;
 import edu.xjtlu.cpt403.util.ExcelUtils;
 import edu.xjtlu.cpt403.util.RowData;
@@ -9,6 +8,8 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,14 +61,48 @@ public class FoodDAO extends AbstractDataBase<Food> {
         return true;
     }
 
+
     @Override
-    public boolean delete(Food object) throws Exception {
-        return false;
+    public int delete(int id) throws Exception {
+        List<RowData> list = ExcelUtils.readAll(path, sheetName);
+        List<Integer> rowIndexList = new ArrayList<>(list.stream().filter(rowData -> {
+            Food food = new Food();
+            try {
+                convert(rowData, food);
+            } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            return id == food.getId() && id > 0;
+        }).map(RowData::getRowIndex).toList());
+
+        // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
+        rowIndexList.sort(Comparator.reverseOrder());
+        if (CollectionUtils.isNotEmpty(rowIndexList)) {
+            for (Integer rowIndex : rowIndexList) {
+                ExcelUtils.delete(rowIndex, path, sheetName);
+            }
+        }
+        return rowIndexList.size();
     }
 
     @Override
-    public boolean update(int id, Food object) throws Exception {
-        return false;
+    public int update(int id, Food object) throws Exception {
+        List<RowData> list = ExcelUtils.readAll(path, sheetName);
+        List<RowData> rowDataList = list.stream().filter(rowData -> {
+            Food food = new Food();
+            try {
+                convert(rowData, food);
+            } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            return id == food.getId() && id > 0;
+        }).toList();
+
+        if (CollectionUtils.isEmpty(rowDataList)) {
+            return 0;
+        }
+
+        return update(rowDataList, convert(object));
     }
 
     @Override
@@ -86,5 +121,8 @@ public class FoodDAO extends AbstractDataBase<Food> {
         throw new Exception("food id = " + id + " not find in our system");
     }
 
-
+    @Override
+    protected String getSheetName() {
+        return sheetName;
+    }
 }
