@@ -2,30 +2,24 @@ package edu.xjtlu.cpt403.userinterface;
 
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.database.RoomDAO;
-import edu.xjtlu.cpt403.entity.AdminUser;
-import edu.xjtlu.cpt403.entity.Customer;
-import edu.xjtlu.cpt403.entity.Food;
-import edu.xjtlu.cpt403.entity.Room;
-import edu.xjtlu.cpt403.entity.User;
+import edu.xjtlu.cpt403.entity.*;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import edu.xjtlu.cpt403.database.FoodDAO;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.SchemaOutputResolver;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 public class FoodUI {
     /**
-     ** 查询所有食物
+     ** show the list of food in this shop
      */
     public static void queryFood() {
-        System.out.println("=============================================================");
         System.out.println("                     Food List");
-
+        System.out.println("=============================================================");
         FoodDAO foodDAO = DataBaseManager.getFoodDAO();
 
         try {
@@ -44,24 +38,21 @@ public class FoodUI {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            System.out.println("                  All Food lists are above!");
             System.out.println("=============================================================");
+            System.out.println("                  All Food lists are above!");
         }
     }
 
     /**
-     * 购买食物
-     *  考虑食物库存， 用户积分， 积分兑换等逻辑
-     * 1.展示食物清单
-     * 2.让用户选择需要购买得食物,并
-     * 3.判断顾客是不是VIP，是的话两种选择，95折 or stamp+1
-     * 4.更新食物库存和销量和更新顾客状态
-     * 5.提示购买成功，可以溜了
+     * 1.show food list
+     * 2.get foodID
+     * 3.make sure users want to buy how many food
+     * 4.determine the identity of user and if he/she is customer, we should know if the customer is VIP
+     * 5.update the status of (customer and) drink
+     * 5.feedback
      */
     public static void buyFood() throws Exception {
         User user = UserInterfaceUtils.getCurrentUser();
-        int userID = user.getId();
-        Customer customer = DataBaseManager.getCustomerDAO().select(userID);
         /**
          * step 1:
          * show our food lists for users to tell what they can buy
@@ -123,64 +114,77 @@ public class FoodUI {
             CoffeeShopUI.run();
             return;
         }
-
+        totalPrice = price * count;
         /**
          * step 4:
-         *Determine whether the customer is VIP
+         * determin the identity of the user
+         * if user is admin or guest, just update the stock and sellAmount
+         * ---------------------------------------------------------------
+         * if user is customer
+         * determine whether the customer is VIP
          * if yes, there are two options, 5% discount or stamp+1
          * if not, only stamp+1
+         * Then update the status of customer and food
          */
-        int isVip = customer.getIsVip();
-        totalPrice = price * count;
-        int loyaltyCardNumber = customer.getLoyaltyCard();
-        if (loyaltyCardNumber == 10){
-            System.out.println("Now the quantity of your loyaltyCard is 10, and you can exchange a bottle of drink for free");
-            System.out.println("Would you like to exchange?");
-            System.out.println("Input 1 to exchange, 2 not to exchange");
-            System.out.println("Input Please:");
-            int exchangeOrnot = UserInterfaceUtils.getIntInput(1,2);
-            if (exchangeOrnot == 1){
-                loyaltyCardNumber = 0;
-                customer.setLoyaltyCard(loyaltyCardNumber);
-                // todo:免费饮料的数量减一
+        if(user instanceof Customer){
+            int userID = user.getId();
+            Customer customer = DataBaseManager.getCustomerDAO().select(userID);
+            int isVip = customer.getIsVip();
+            int loyaltyCardNumber = customer.getLoyaltyCard();
+            if (loyaltyCardNumber == 10){
+                System.out.println("Now the quantity of your loyaltyCard is 10, and you can exchange a bottle of drink for free");
+                System.out.println("Would you like to exchange?");
+                System.out.println("Input 1 to exchange, 2 not to exchange");
+                System.out.println("Input Please:");
+                int exchangeOrnot = UserInterfaceUtils.getIntInput(1,2);
+                // stamp == 0 and the number of free drink -1 in stock
+                if (exchangeOrnot == 1){
+                    loyaltyCardNumber = 0;
+                    customer.setLoyaltyCard(loyaltyCardNumber);
+                    Drink freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    int stockDrink = freeDrink.getStockAvailable();
+                    int sellAmountDrink = freeDrink.getSellAmount();
+                    DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                }
             }
-        }
-        if (isVip == 1){
-            System.out.println("Hello " +customer.getName()+ " ! Now You should pay "+totalPrice+
-                    "RMB to buy "+foodName+".");
-            System.out.println("You can add one to your loyaltyCard quantity, " +
-                    "or take 5% off the total price. Which one do you want to select, " +
-                    "type 1 to select the former, type 2 to select the latter." +
-                    " Input please: ");
-            int choice = UserInterfaceUtils.getIntInput(1,2);
-            if (choice == 1){
+            if (isVip == 1){
+                System.out.println("Hello " +customer.getName()+ " ! Now You should pay "+totalPrice+
+                        "RMB to buy "+foodName+".");
+                System.out.println("You can add one to your loyaltyCard quantity, " +
+                        "or take 5% off the total price. Which one do you want to select, " +
+                        "type 1 to select the former, type 2 to select the latter." +
+                        " Input please: ");
+                int choice = UserInterfaceUtils.getIntInput(1,2);
+                if (choice == 1){
+                    if (loyaltyCardNumber < 10){
+                        customer.setLoyaltyCard(loyaltyCardNumber+1);
+                    }
+                }else {
+                    totalPrice = 0.95 * totalPrice;
+                }
+            }else{
                 if (loyaltyCardNumber < 10){
                     customer.setLoyaltyCard(loyaltyCardNumber+1);
                 }
-            }else {
-                totalPrice = 0.95 * totalPrice;
             }
+            DataBaseManager.getCustomerDAO().update(userID,customer);
+            updateFood(foodID,count);
+        }else if (user instanceof  AdminUser){
+            updateFood(foodID,count);
         }else{
-            if (loyaltyCardNumber < 10){
-                customer.setLoyaltyCard(loyaltyCardNumber+1);
-            }
+            updateFood(foodID,count);
         }
-
-        /**
-         * step 5:
-         * update the status of customer and food
-         * give a message to tell customer that they finished their shopping
-         */
-        DataBaseManager.getCustomerDAO().update(userID,customer);
-        updateFood(foodID,count);
-        System.out.println("Payment completed!");
-        System.out.println("Have a nice day and See you next time~");
+        System.out.println("payment completed!");
+        System.out.println("Have a nice day and see you next time~");
     }
 
     /**
      * Insert a new food
+     * 1.get the details of new food
      * if id == 0 means the system automatically sets the id value
      * if id == any postive number means we want to set a specific id value
+     * 2. add it
+     * 3. feedback
      */
     public static void addFood() throws Exception {
         int id;
@@ -210,10 +214,14 @@ public class FoodUI {
             food.setId(id);
             DataBaseManager.getFoodDAO().insert(food, false);
         }
+        System.out.println(name + " was added successfully!");
     }
 
     /**
-     * update all attributes: name, price, stockAvailable, sellAmount
+     * user:admin
+     * 1.determine which one we want to update
+     * 2.update all attributes: name, price, stockAvailable, sellAmount
+     * 3.feedback
      */
     public static void updateFood() throws Exception {
         int id;
@@ -236,21 +244,24 @@ public class FoodUI {
         food.setStockAvailable(stockAvailable);
         food.setSellAmount(sellAmount);
         DataBaseManager.getFoodDAO().update(id,food);
+        System.out.println(name + " was updated successfully!");
     }
 
     /**
+     * when user buy drink, we use this method to update the part of the attributes of this drink
      * only update stockAvailble and sellAmount
      */
     public static void updateFood(int id, int count) throws Exception {
         Food food = DataBaseManager.getFoodDAO().select(id);
         int stockAvailble = food.getStockAvailable();
         int sellAmount = food.getSellAmount();
-        food.setSellAmount(stockAvailble - count);
+        food.setStockAvailable(stockAvailble - count);
         food.setSellAmount(sellAmount + count);
         DataBaseManager.getFoodDAO().update(id,food);
     }
 
     /**
+     * user:admin
      * Delete food based on its id
      */
     public static void removeFood() throws Exception {
@@ -258,6 +269,7 @@ public class FoodUI {
         System.out.print("Please select the id of the food you want to remove, Input this id:");
         id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
         Food food = DataBaseManager.getFoodDAO().select(id);
-        DataBaseManager.getFoodDAO().delete(food);
+        System.out.println(food.getName() + " was updated successfully!");
+        DataBaseManager.getFoodDAO().delete(id);
     }
 }

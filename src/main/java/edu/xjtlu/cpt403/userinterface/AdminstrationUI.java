@@ -1,9 +1,33 @@
 package edu.xjtlu.cpt403.userinterface;
 
 
+import edu.xjtlu.cpt403.database.DataBaseManager;
+import edu.xjtlu.cpt403.entity.AdminUser;
+import edu.xjtlu.cpt403.entity.User;
+
+import static edu.xjtlu.cpt403.util.UserInterfaceUtils.getStringInput;
 import static edu.xjtlu.cpt403.util.UserInterfaceUtils.showOptionsAndGetChoice;
 
 public class AdminstrationUI {
+
+    /**
+     * 登录流程
+     */
+    public static void login() throws Exception {
+        String username = getStringInput("Please input the admin username", s -> User.validateName(s));
+        String password = getStringInput("Please input the admin password", s -> User.validatePassword(s));
+
+        try {
+            AdminUser.validateLogin(username, password, DataBaseManager.getAdminUserDAO());
+        } catch (IllegalArgumentException ex) {
+            System.out.println(ex.getMessage() + ", Please try again.");
+            login();
+            return;
+        }
+
+        run(username);
+
+    }
 
     public static void run(String username) throws Exception {
         System.out.println("=============================================================");
@@ -26,6 +50,9 @@ public class AdminstrationUI {
             }
         }
         while (choice != 0);
+
+        // 退出的时候， 顺便把账号也退出登录
+        CustomerUI.exitLogin();
     }
 
     private static void bookRoom() {
@@ -93,4 +120,6 @@ public class AdminstrationUI {
         }
         while (choice != 0);
     }
+
+
 }

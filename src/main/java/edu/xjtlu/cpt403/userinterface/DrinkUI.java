@@ -3,10 +3,7 @@ package edu.xjtlu.cpt403.userinterface;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.database.DrinkDAO;
 import edu.xjtlu.cpt403.database.FoodDAO;
-import edu.xjtlu.cpt403.entity.Customer;
-import edu.xjtlu.cpt403.entity.Drink;
-import edu.xjtlu.cpt403.entity.Food;
-import edu.xjtlu.cpt403.entity.User;
+import edu.xjtlu.cpt403.entity.*;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -16,12 +13,11 @@ import java.util.List;
 public class DrinkUI {
 
     /**
-     * 查询所有饮料
+     * show the list of drink
      */
     public static void queryDrink() {
-        System.out.println("=============================================================");
         System.out.println("                     Drink List");
-
+        System.out.println("=============================================================");
         DrinkDAO drinkDAO = DataBaseManager.getDrinkDAO();
 
         try {
@@ -40,19 +36,23 @@ public class DrinkUI {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            System.out.println("                  All drink lists are above!");
             System.out.println("=============================================================");
+            System.out.println("                  All drink lists are above!");
         }
     }
 
+
     /**
-     * 购买饮料
-     *  考虑饮料库存， 用户积分， 积分兑换等逻辑
+     * 1.show our drink lists for users to tell what they can buy
+     * 2.Get drinkID
+     * 3.make sure users want to buy how many drink
+     * 4.Determine the identity of user and if he/she is customer, we should know if the customer is VIP
+     * 5.update the status of (customer and) drink
+     * 6.feedback
      */
     public static void buyDrink() throws Exception {
         User user = UserInterfaceUtils.getCurrentUser();
-        int userID = user.getId();
-        Customer customer = DataBaseManager.getCustomerDAO().select(userID);
+
         /**
          * step 1:
          * show our drink lists for users to tell what they can buy
@@ -114,6 +114,9 @@ public class DrinkUI {
             CoffeeShopUI.run();
             return;
         }
+        totalPrice = price * count;
+
+
 
         /**
          * step 4:
@@ -121,56 +124,69 @@ public class DrinkUI {
          * if yes, there are two options, 5% discount or stamp+1
          * if not, only stamp+1
          */
-        int isVip = customer.getIsVip();
-        totalPrice = price * count;
-        int loyaltyCardNumber = customer.getLoyaltyCard();
-        if (loyaltyCardNumber == 10){
-            System.out.println("Now the quantity of your loyaltyCard is 10, and you can exchange a bottle of drink for free");
-            System.out.println("Would you like to exchange?");
-            System.out.println("Input 1 to exchange, 2 not to exchange");
-            System.out.println("Input Please:");
-            int exchangeOrnot = UserInterfaceUtils.getIntInput(1,2);
-            if (exchangeOrnot == 1){
-                loyaltyCardNumber = 0;
-                customer.setLoyaltyCard(loyaltyCardNumber);
-                // todo:免费饮料的数量减一
+        if (user instanceof Customer){
+            int userID = user.getId();
+            Customer customer = DataBaseManager.getCustomerDAO().select(userID);
+            int isVip = customer.getIsVip();
+            int loyaltyCardNumber = customer.getLoyaltyCard();
+            if (loyaltyCardNumber == 10){
+                System.out.println("Now the quantity of your loyaltyCard is 10, and you can exchange a bottle of drink for free");
+                System.out.println("Would you like to exchange?");
+                System.out.println("Input 1 to exchange, 2 not to exchange");
+                System.out.println("Input Please:");
+                int exchangeOrnot = UserInterfaceUtils.getIntInput(1,2);
+                // stamp == 0 and the number of free drink -1 in stock
+                if (exchangeOrnot == 1){
+                    loyaltyCardNumber = 0;
+                    customer.setLoyaltyCard(loyaltyCardNumber);
+                    Drink freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    int stockDrink = freeDrink.getStockAvailable();
+                    int sellAmountDrink = freeDrink.getSellAmount();
+                    DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                }
             }
-        }
-        if (isVip == 1){
-            System.out.println("Hello " +customer.getName()+ " ! Now You should pay "+totalPrice+
-                    "RMB to buy "+drinkName+".");
-            System.out.println("You can add one to your loyaltyCard quantity, " +
-                    "or take 5% off the total price. Which one do you want to select, " +
-                    "type 1 to select the former, type 2 to select the latter." +
-                    " Input please: ");
-            int choice = UserInterfaceUtils.getIntInput(1,2);
-            if (choice == 1){
+            if (isVip == 1){
+                System.out.println("Hello " +customer.getName()+ " ! Now You should pay "+totalPrice+
+                        "RMB to buy "+drinkName+".");
+                System.out.println("You can add one to your loyaltyCard quantity, " +
+                        "or take 5% off the total price. Which one do you want to select, " +
+                        "type 1 to select the former, type 2 to select the latter." +
+                        " Input please: ");
+                int choice = UserInterfaceUtils.getIntInput(1,2);
+                if (choice == 1){
+                    if (loyaltyCardNumber < 10){
+                        customer.setLoyaltyCard(loyaltyCardNumber+1);
+                    }
+                }else {
+                    totalPrice = 0.95 * totalPrice;
+                }
+            }else{
                 if (loyaltyCardNumber < 10){
                     customer.setLoyaltyCard(loyaltyCardNumber+1);
                 }
-            }else {
-                totalPrice = 0.95 * totalPrice;
             }
-        }else{
-            if (loyaltyCardNumber < 10){
-                customer.setLoyaltyCard(loyaltyCardNumber+1);
-            }
-        }
 
-        /**
-         * step 5:
-         * update the status of customer and drink
-         * give a message to tell customer that they finished their shopping
-         */
-        DataBaseManager.getCustomerDAO().update(userID,customer);
-        updateDrink(drinkID,count);
+            /**
+             * step 5:
+             * update the status of customer and drink
+             * give a message to tell customer that they finished their shopping
+             */
+            DataBaseManager.getCustomerDAO().update(userID,customer);
+            updateDrink(drinkID,count);
+        }else  if (user instanceof AdminUser){
+            updateDrink(drinkID,count);
+        }else {
+            updateDrink(drinkID,count);
+        }
         System.out.println("Payment completed!");
         System.out.println("Have a nice day and See you next time~");
     }
 
 
     /**
-     * 新增，也就是上架商品 根据商品属性录入名字，库存，价格等等
+     * 1.get the details of new drink
+     * 2.add it
+     * 3.feedback
      */
     public static void addDrink() throws Exception {
         int id;
@@ -200,11 +216,15 @@ public class DrinkUI {
             drink.setId(id);
             DataBaseManager.getDrinkDAO().insert(drink, false);
         }
+        System.out.println(name + " was added successfully!");
 
     }
 
     /**
-     * 更新， 考虑修改价格， 库存等
+     * user:admin
+     * 1.determine which one we want to update
+     * 2.update all attributes of this drink
+     * 3.feedback
      */
     public static void updateDrink() throws Exception {
         int id;
@@ -227,29 +247,36 @@ public class DrinkUI {
         drink.setStockAvailable(stockAvailable);
         drink.setSellAmount(sellAmount);
         DataBaseManager.getDrinkDAO().update(id,drink);
+        System.out.println(name + " was updated successfully!");
     }
 
     /**
+     * when user buy drink, we use this method to update the part of the attributes of this drink
      * only update stockAvailble and sellAmount
      */
     public static void updateDrink(int id, int count) throws Exception {
         Drink drink = DataBaseManager.getDrinkDAO().select(id);
         int stockAvailble = drink.getStockAvailable();
         int sellAmount = drink.getSellAmount();
-        drink.setSellAmount(stockAvailble - count);
+        drink.setStockAvailable(stockAvailble - count);
         drink.setSellAmount(sellAmount + count);
         DataBaseManager.getDrinkDAO().update(id,drink);
     }
 
     /**
-     * 删除， 也就是商品下架，根据商品名字或者id操作
+     * user:admin
+     * get the id of the drink
+     * find this drink by its id
+     * delete this drink
+     * feedback
      */
     public static void removeDrink() throws Exception {
         int id;
         System.out.print("Please select the id of the drink you want to remove, Input this id:");
         id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
         Drink drink = DataBaseManager.getDrinkDAO().select(id);
-        DataBaseManager.getDrinkDAO().delete(drink);
+        System.out.println(drink.getName() + " was updated successfully!");
+        DataBaseManager.getDrinkDAO().delete(id);
 
     }
 }
