@@ -136,7 +136,13 @@ public class CustomerUI {
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
-            login();
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Fail in log in." + e.getMessage());
+                System.out.println("Please try again.");
+                return;
+            }
         }
 
         System.out.println("=============================================================");
@@ -185,7 +191,13 @@ public class CustomerUI {
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
-            login();
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Fail in log in." + e.getMessage());
+                System.out.println("Please try again.");
+                return;
+            }
         }
 
         //获取已登陆用户的信息
@@ -258,7 +270,13 @@ public class CustomerUI {
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
-            login();
+            try {
+                login();
+            } catch (Exception e) {
+                System.out.println("Fail in log in." + e.getMessage());
+                System.out.println("Please try again.");
+                return;
+            }
         }
 
         //获取已登陆用户的信息
