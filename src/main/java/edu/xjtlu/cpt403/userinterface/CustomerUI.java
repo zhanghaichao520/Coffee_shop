@@ -76,7 +76,7 @@ public class CustomerUI {
      *  7. 确认无误后，数据库写入新用户信息，注册成功
      *
      */
-    public static void regist() throws Exception {
+    public static void regist(){
 
         Customer newCustomer = new Customer();
         System.out.println("=============================================================");
@@ -109,9 +109,14 @@ public class CustomerUI {
             password2 = getStringInput("Please re-input your password: ", s -> User.validatePassword(s));
         }
 
-
-        DataBaseManager.getCustomerDAO().insert(newCustomer, true);
-
+        try {
+            DataBaseManager.getCustomerDAO().insert(newCustomer, true);
+        }
+        catch (Exception e) {
+            System.out.println("Fail in regist." + e.getMessage());
+            System.out.println("Please try again.");
+            return;
+        }
 
         // 核心 customer  插入数据
     }
@@ -127,7 +132,7 @@ public class CustomerUI {
      *  4. 数据库写入新用户信息，密码修改成功
      *
      */
-    public static void changePassword() throws Exception {
+    public static void changePassword(){
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
@@ -158,7 +163,14 @@ public class CustomerUI {
         //输入新密码
         String newPassword = getStringInput("Please type in your new password:", s -> User.validatePassword(s));
         currentUser.setPassWord(newPassword);
-        DataBaseManager.getCustomerDAO().update(currentUser.getId(), customer);
+        try {
+            DataBaseManager.getCustomerDAO().update(currentUser.getId(), customer);
+        }
+        catch (Exception e) {
+            System.out.println("Fail in change password." + e.getMessage());
+            System.out.println("Please try again.");
+            return;
+        }
         // 核心 customer  修改密码字段
     }
 
@@ -169,7 +181,7 @@ public class CustomerUI {
      * 2. 用户确认后，取消用户预订的房间，从数据库中删除用户的信息
      * 3. 若用户选择不注销则直接退出
      */
-    public static void cancellation() throws Exception {
+    public static void cancellation(){
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
@@ -224,8 +236,14 @@ public class CustomerUI {
         if (currentUser instanceof Customer) {
             customer = (Customer) currentUser;
         }
-        DataBaseManager.getCustomerDAO().delete(customer);
-
+        try {
+            DataBaseManager.getCustomerDAO().delete(customer);
+        }
+        catch (Exception e) {
+            System.out.println("Fail in cancellation." + e.getMessage());
+            System.out.println("Please try again.");
+            return;
+        }
         //没搞懂冻结的机制，如果是改变用户状态的话，那么不仅是customer object要多加一个属性，登陆选项等等也要改，而且从哪个接口解冻呢
         //而且冻结的话，占内存，如果要做些附加功能，可以考虑一下长期未登录用户的自动注销
 
@@ -236,7 +254,7 @@ public class CustomerUI {
     /**
      * 开通会员流程
      */
-    public static void becomeVip() throws Exception {
+    public static void becomeVip(){
         //若未登录，提醒登录
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
@@ -271,8 +289,14 @@ public class CustomerUI {
             customer = (Customer) currentUser;
         }
         customer.setIsVip(1);
-        DataBaseManager.getCustomerDAO().update(customer.getId(), customer);
-
+        try {
+            DataBaseManager.getCustomerDAO().update(customer.getId(), customer);
+        }
+        catch (Exception e) {
+            System.out.println("Fail in activate VIP status." + e.getMessage());
+            System.out.println("Please try again.");
+            return;
+        }
         // 核心 customer  修改VIP字段
     }
 
