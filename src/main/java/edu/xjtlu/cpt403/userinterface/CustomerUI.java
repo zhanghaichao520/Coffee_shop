@@ -40,12 +40,12 @@ public class CustomerUI {
                 "Become VIP.",
                 "Buy Food.",
                 "Buy Drink.",
-                "Reservation room.",
+                "Reserve Room.",
                 "Query My Reservation.",
                 "Query All Available Room.",
                 "Cancel Reservation.",
-                "Change password.",
-                "Cancellation Account."
+                "Change Password.",
+                "Cancel Account."
         };
         int choice;
         do {
@@ -73,13 +73,14 @@ public class CustomerUI {
      *  1. 创建新Customer object
      *  2. 用户输入用户名
      *  3. 用户设置性别（男，女，保密）
-     *  4. 用户设置密码
-     *  5. 重复输入密码
-     *  6. 检查两次输入是否一致
-     *  7. 确认无误后，数据库写入新用户信息，注册成功
+     *  4. 用户输入手机号
+     *  5. 用户设置密码
+     *  6. 重复输入密码
+     *  7. 检查两次输入是否一致
+     *  8. 确认无误后，数据库写入新用户信息，注册成功
      *
      */
-    public static void regist(){
+    public static void register(){
 
         Customer newCustomer = new Customer();
         System.out.println("=============================================================");
@@ -102,6 +103,9 @@ public class CustomerUI {
             }
         } while (choice == 0);
 
+        String phoneNumeber = getStringInput("Please input your phone number: ", s -> User.validatePhoneNumber(s));
+        newCustomer.setPhoneNumber(phoneNumeber);
+
         String password = getStringInput("Set your password: ", s -> User.validatePassword(s));
 
         String password2 = getStringInput("Please re-input your password: ", s -> User.validatePassword(s));
@@ -116,11 +120,11 @@ public class CustomerUI {
             DataBaseManager.getCustomerDAO().insert(newCustomer,true);
         }
         catch (Exception e) {
-            System.out.println("Fail in regist." + e.getMessage());
+            System.out.println("Fail in register." + e.getMessage());
             System.out.println("Please try again.");
             return;
         }
-        System.out.println("Regist successfully!");
+        System.out.println("Register successfully!");
 
         // 核心 customer  插入数据
     }
@@ -261,6 +265,7 @@ public class CustomerUI {
             System.out.println("Please try again.");
             return;
         }
+        exitLogin();
         System.out.println("User has been cancelled successfully.");
         //没搞懂冻结的机制，如果是改变用户状态的话，那么不仅是customer object要多加一个属性，登陆选项等等也要改，而且从哪个接口解冻呢
         //而且冻结的话，占内存，如果要做些附加功能，可以考虑一下长期未登录用户的自动注销
