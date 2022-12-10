@@ -39,7 +39,7 @@ public class CoffeeShopUI {
             switch (choice) {
                 case 1 : FoodUI.buyFood(); break;
                 case 2 : DrinkUI.buyDrink(); break;
-                case 3 : CustomerUI.regist(); break;
+                case 3 : CustomerUI.register(); break;
             }
         }
         while (choice != 0);
@@ -51,7 +51,7 @@ public class CoffeeShopUI {
                 "Exit.",
                 "Login.",
                 "Register Account.",
-                "change password.",
+                "Change Password.",
                 "Cancellation Account."
         };
         int choice;
@@ -67,7 +67,7 @@ public class CoffeeShopUI {
                         return;
                     }
                     break;
-                case 2 : CustomerUI.regist(); break;
+                case 2 : CustomerUI.register(); break;
                 case 3 : CustomerUI.changePassword(); break;
                 case 4 : CustomerUI.cancellation(); break;
             }
