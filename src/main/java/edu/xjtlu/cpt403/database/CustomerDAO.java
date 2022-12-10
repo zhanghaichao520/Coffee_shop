@@ -9,6 +9,8 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,10 +19,29 @@ public class CustomerDAO extends AbstractDataBase<Customer> {
 
     public static void main(String[] args) throws Exception {
         CustomerDAO dao = new CustomerDAO();
+        // test select all
         List<Customer> result = dao.selectAll();
         System.out.println(JSON.toJSONString(result));
 
-        System.out.println(dao.insert(new Customer(0, "haichao", "123456", "1828888888", "unknown", 1, 9), true));
+        // test insert
+        System.out.println(dao.insert(new Customer(888, "wyw", "123456", "1828888888", "unknown", 1, 9), false));
+        result = dao.selectAll();
+        System.out.println(JSON.toJSONString(result));
+
+        // test select
+        System.out.println(JSON.toJSONString(dao.select(888)));
+
+        // update
+        System.out.println("update record count: " + dao.update(888, new Customer(888, "wyw", "654321", "1828889999", "boy", 0, 9)));
+
+        // query
+        result = dao.selectAll();
+        System.out.println(JSON.toJSONString(result));
+
+        // delete
+//        System.out.println("delete record count: " + dao.delete(888));
+
+        // query
         result = dao.selectAll();
         System.out.println(JSON.toJSONString(result));
 
@@ -57,14 +78,47 @@ public class CustomerDAO extends AbstractDataBase<Customer> {
         return true;
     }
 
-    @Override
-    public boolean delete(Customer object) throws Exception {
-        return false;
-    }
 
     @Override
-    public boolean update(int id, Customer object) throws Exception {
-        return false;
+    public int delete(int id) throws Exception {
+        List<RowData> list = ExcelUtils.readAll(path, sheetName);
+        List<Integer> rowIndexList = new ArrayList<>(list.stream().filter(rowData -> {
+            Customer customer = new Customer();
+            try {
+                convert(rowData, customer);
+            } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            return id == customer.getId() && id > 0;
+        }).map(RowData::getRowIndex).toList());
+
+        // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
+        rowIndexList.sort(Comparator.reverseOrder());
+        if (CollectionUtils.isNotEmpty(rowIndexList)) {
+            for (Integer rowIndex : rowIndexList) {
+                ExcelUtils.delete(rowIndex, path, sheetName);
+            }
+        }
+        return rowIndexList.size();
+    }
+    @Override
+    public int update(int id, Customer object) throws Exception {
+        List<RowData> list = ExcelUtils.readAll(path, sheetName);
+        List<RowData> rowDataList = list.stream().filter(rowData -> {
+            Customer customer = new Customer();
+            try {
+                convert(rowData, customer);
+            } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            return id == customer.getId() && id > 0;
+        }).toList();
+
+        if (CollectionUtils.isEmpty(rowDataList)) {
+            return 0;
+        }
+
+        return update(rowDataList, convert(object));
     }
 
     @Override
@@ -100,5 +154,8 @@ public class CustomerDAO extends AbstractDataBase<Customer> {
         throw new Exception("username = " + name + " not find in our system");
     }
 
-
+    @Override
+    protected String getSheetName() {
+        return sheetName;
+    }
 }

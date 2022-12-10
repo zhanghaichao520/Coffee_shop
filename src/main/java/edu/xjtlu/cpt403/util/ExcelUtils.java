@@ -1,7 +1,9 @@
 package edu.xjtlu.cpt403.util;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -50,10 +52,13 @@ public class ExcelUtils {
 
 
     public static void main(String[] args) throws Exception {
-        String path = "src/main/resources/User.xlsx";
+        String path = "src/main/resources/Database.xlsx";
         String sheetName = "AdminUser";
         List<RowData> list = readAll( path, sheetName);
         System.out.println(JSON.toJSONString(list));
+        System.out.println(list.get(0).getRowIndex());
+        System.out.println(JSON.toJSONString(list.get(0).getColNameToColIndex()));
+        update(1,0, "1", path,sheetName);
     }
 
     public static void delete(int rowIndex, String path, String sheets) throws IOException {
@@ -83,7 +88,7 @@ public class ExcelUtils {
     public static void update(int rowNum, int colNum, String value, String path, String sheets) throws IOException {
         XSSFWorkbook workbook = getExcelByPath(path);
         XSSFSheet sheet = workbook.getSheet(sheets);
-        XSSFRow row = sheet.getRow(rowNum + 1);
+        XSSFRow row = sheet.getRow(rowNum);
         XSSFCell cell = row.getCell(colNum);
         if (cell == null) {
             row.createCell(colNum).setCellValue(value);
@@ -116,20 +121,23 @@ public class ExcelUtils {
         XSSFSheet sheet = workbook.getSheet(sheets);
 
         Map<Integer, String> indexToName = new HashMap<>();
+        Map<String, Integer> nameToIndex = new HashMap<>();
 
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             // init a blank row
             RowData data = new RowData();
-
             for (int j = 0; j < sheet.getRow(i).getLastCellNum(); j++) {
                 // record table head
                 if (i == 0) {
                     indexToName.put(j, sheet.getRow(i).getCell(j).getStringCellValue());
+                    nameToIndex.put(sheet.getRow(i).getCell(j).getStringCellValue(), j);
                 } else {
                     data.put(indexToName.getOrDefault(j, "UNKNOWN_FIELD"),  formatCell(sheet.getRow(i).getCell(j)));
                 }
             }
             if (i != 0) {
+                data.setRowIndex(sheet.getRow(i).getRowNum());
+                data.setColNameToColIndex(nameToIndex);
                 rs.add(data);
             }
         }
