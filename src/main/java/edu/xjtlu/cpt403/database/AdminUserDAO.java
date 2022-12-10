@@ -53,7 +53,7 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
                 throw new RuntimeException(e);
             }
             return id == adminUser.getId() && id > 0;
-        }).map(RowData::getRowIndex).toList());
+        }).map(RowData::getRowIndex).collect(Collectors.toList()));
 
         // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
         rowIndexList.sort(Comparator.reverseOrder());
@@ -103,7 +103,7 @@ public class AdminUserDAO extends AbstractDataBase<AdminUser> {
                 throw new RuntimeException(e);
             }
             return id == adminUser.getId() && id > 0;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(rowDataList)) {
            return 0;

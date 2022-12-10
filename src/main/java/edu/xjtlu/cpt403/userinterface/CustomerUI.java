@@ -11,7 +11,7 @@ public class CustomerUI {
     /**
      * 登录流程
      */
-    public static void login() {
+    public static void login() throws Exception {
         String username = getStringInput("Please input your username", s -> User.validateName(s));
         String password = getStringInput("Please input your password", s -> User.validatePassword(s));
 
@@ -27,7 +27,7 @@ public class CustomerUI {
 
     }
 
-    public static void run(String username) {
+    public static void run(String username) throws Exception {
         System.out.println("=============================================================");
         System.out.println("Hi, " + username + " welcome to our coffee shop !");
 

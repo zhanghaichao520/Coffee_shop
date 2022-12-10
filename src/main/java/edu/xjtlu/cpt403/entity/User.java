@@ -48,7 +48,6 @@ public abstract class User implements Comparable<User>, Serializable {
         if (StringUtils.isNumeric(name)) {
             throw new IllegalArgumentException("name cannot be only numberic");
         }
-
         return true;
     }
 
