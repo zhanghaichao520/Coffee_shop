@@ -39,7 +39,7 @@ public class RoomUI {
             return;
         }
         // 1. 先展示所有的房间列表
-        queryReservation();
+        queryReservation(true, false);
 
         // 2. 让用户输入需要预定的房间号,可以对用户的输入进行校验， 也可以不校验（第二个参数直接传入null）
         String roomNumber = UserInterfaceUtils.getStringInput("Please enter the room number you want to reserve", new Function<String, Boolean>() {
@@ -108,7 +108,7 @@ public class RoomUI {
     }
 
 
-    public static void queryReservation() {
+    public static void queryReservation(boolean displayAvailable, boolean displayReserved) {
         System.out.println("=============================================================");
         System.out.println("Let's start queryReservation room");
 
@@ -131,10 +131,15 @@ public class RoomUI {
 
             for (Room room : roomList) {
                 // 可预定房间单独展示
-                if (room.isAvailable()) {
+                if (room.isAvailable() && displayAvailable) {
                     System.out.println(room);
                     continue;
                 }
+
+                if (!displayReserved) {
+                    continue;
+                }
+
                 //  普通用户不能查看别人定了的房间，
                 if ((UserInterfaceUtils.getCurrentUser() instanceof Customer)
                         && (room.getBookUserid() != UserInterfaceUtils.getCurrentUser().getId())){

@@ -36,8 +36,8 @@ public class AdminstrationUI {
         String[] options = {
                 "Exit.",
                 "Inventory management.",
-                "Purchase of Goods.",
-                "Reservation Room."
+                "Purchase of goods.",
+                "Reservation room."
         };
         int choice;
         do {
@@ -59,7 +59,7 @@ public class AdminstrationUI {
         String[] options = {
                 "Exit.",
                 "New Reservation.",
-                "Query Reservation.",
+                "Query All Room.",
                 "Cancel Reservation."
         };
         int choice;
@@ -67,7 +67,7 @@ public class AdminstrationUI {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
                 case 1 : RoomUI.newReservation(); break;
-                case 2 : RoomUI.queryReservation(); break;
+                case 2 : RoomUI.queryReservation(true, true); break;
                 case 3 : RoomUI.cancelReservation(); break;
             }
         }
@@ -77,7 +77,7 @@ public class AdminstrationUI {
     private static void purchaseGoods() throws Exception {
         String[] options = {
                 "Exit.",
-                "Buy Food.",
+                "Buy food.",
                 "Buy Drink."
         };
         int choice;

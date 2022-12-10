@@ -42,6 +42,7 @@ public class CustomerUI {
                 "Buy Drink.",
                 "Reserve Room.",
                 "Query My Reservation.",
+                "Query All Available Room.",
                 "Cancel Reservation.",
                 "Change Password.",
                 "Cancel Account."
@@ -54,10 +55,11 @@ public class CustomerUI {
                 case 2 : FoodUI.buyFood(); break;
                 case 3 : DrinkUI.buyDrink(); break;
                 case 4 : RoomUI.newReservation(); break;
-                case 5 : RoomUI.queryReservation(); break;
-                case 6 : RoomUI.cancelReservation(); break;
-                case 7 : changePassword(); break;
-                case 8 : cancellation(); break;
+                case 5 : RoomUI.queryReservation(false, true); break;
+                case 6 : RoomUI.queryReservation(true, false); break;
+                case 7 : RoomUI.cancelReservation(); break;
+                case 8 : changePassword(); break;
+                case 9 : cancellation(); break;
 
             }
         }
