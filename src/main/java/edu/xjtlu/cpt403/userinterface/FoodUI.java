@@ -51,7 +51,7 @@ public class FoodUI {
      * 5.update the status of (customer and) drink
      * 5.feedback
      */
-    public static void buyFood() throws Exception {
+    public static void buyFood() {
         User user = UserInterfaceUtils.getCurrentUser();
         /**
          * step 1:
@@ -66,16 +66,25 @@ public class FoodUI {
          */
         int foodID;
         do{
+            System.out.println("Now you should input the id of the food you want to buy!");
             foodID = UserInterfaceUtils.getNumberInput();
             if (foodID == 0){
-                CoffeeShopUI.run();
+                try {
+                    CoffeeShopUI.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
-            if (DataBaseManager.getFoodDAO().select(foodID) == null){
-                System.out.println("Wrong foodID! The reason is that product does not exist or has been removed!");
-                System.out.println("Please try to buy another goods!");
-            }else {
-                break;
+            try {
+                if (DataBaseManager.getFoodDAO().select(foodID) == null){
+                    System.out.println("Wrong foodID! The reason is that product does not exist or has been removed!");
+                    System.out.println("Please try to buy another goods!");
+                }else {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }while (true);
 
@@ -85,15 +94,22 @@ public class FoodUI {
          * make sure users want to buy how many food
          * calculate the results and update the stockAvailable and sellAmount of food(foodID)
          */
-        Food food;
-        food = DataBaseManager.getFoodDAO().select(foodID);
-        double price = food.getPrice();
-        String foodName = food.getName();
-        int stockAvailable = food.getStockAvailable();
-        System.out.println("Now you have selected , " + foodName +
-                "and its unit price is "+ price+". How many copies would you like to buy?");
+        Food food = null;
+        double price;
+        String foodName;
+        int stockAvailable;
         int count;
         double totalPrice;
+        try {
+            food = DataBaseManager.getFoodDAO().select(foodID);
+        } catch (Exception e) {
+            System.out.println("Failed to get the food: "+e.getMessage());
+        }
+        price = food.getPrice();
+        foodName = food.getName();
+        stockAvailable = food.getStockAvailable();
+        System.out.println("Now you have selected , " + foodName +
+                "and its unit price is "+ price+". How many copies would you like to buy?");
         while (true){
             count = UserInterfaceUtils.getNumberInput();
             String end = "";
@@ -111,10 +127,15 @@ public class FoodUI {
             }
         }
         if (count == 0){
-            CoffeeShopUI.run();
+            try {
+                CoffeeShopUI.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
         totalPrice = price * count;
+
         /**
          * step 4:
          * determin the identity of the user
@@ -128,7 +149,12 @@ public class FoodUI {
          */
         if(user instanceof Customer){
             int userID = user.getId();
-            Customer customer = DataBaseManager.getCustomerDAO().select(userID);
+            Customer customer = null;
+            try {
+                customer = DataBaseManager.getCustomerDAO().select(userID);
+            } catch (Exception e) {
+                System.out.println("Failed to get the information of the customer: "+e.getMessage());
+            }
             int isVip = customer.getIsVip();
             int loyaltyCardNumber = customer.getLoyaltyCard();
             if (loyaltyCardNumber == 10){
@@ -141,10 +167,19 @@ public class FoodUI {
                 if (exchangeOrnot == 1){
                     loyaltyCardNumber = 0;
                     customer.setLoyaltyCard(loyaltyCardNumber);
-                    Drink freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    Drink freeDrink = null;
+                    try {
+                        freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     int stockDrink = freeDrink.getStockAvailable();
                     int sellAmountDrink = freeDrink.getSellAmount();
-                    DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                    try {
+                        DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                    } catch (Exception e) {
+                        System.out.println("Failed to update the free drink: "+e.getMessage());
+                    }
                 }
             }
             if (isVip == 1){
@@ -167,7 +202,11 @@ public class FoodUI {
                     customer.setLoyaltyCard(loyaltyCardNumber+1);
                 }
             }
-            DataBaseManager.getCustomerDAO().update(userID,customer);
+            try {
+                DataBaseManager.getCustomerDAO().update(userID,customer);
+            } catch (Exception e) {
+                System.out.println("Failed to update the information of the customer: "+e.getMessage());
+            }
             updateFood(foodID,count);
         }else if (user instanceof  AdminUser){
             updateFood(foodID,count);
@@ -176,6 +215,7 @@ public class FoodUI {
         }
         System.out.println("payment completed!");
         System.out.println("Have a nice day and see you next time~");
+
     }
 
     /**
@@ -186,35 +226,79 @@ public class FoodUI {
      * 2. add it
      * 3. feedback
      */
-    public static void addFood() throws Exception {
-        int id;
-        String name;
+    public static void addFood(){
+        queryFood();
+        int id = 0;
+        String name = null;
         double price;
         int stockAvailable;
-        int sellAmount;
+        int sellAmount = 0;
+        List<Food> foodList = null;
+        boolean sign = true;
+        boolean sign1 = true;
+        try {
+            foodList = DataBaseManager.getFoodDAO().selectAll();
+        } catch (Exception e) {
+            System.out.println("Failed to get the foodList: "+e.getMessage());
+        }
         System.out.println("Please input the details about food you want to add.");
-        System.out.println("Do you want to set specific food id, if you want you can input it, or just input 0 and system will set id atuomatically");
-        System.out.print("Input id:");
-        id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        name = UserInterfaceUtils.getStringInput("Please input the name of this food:",null);
+        while (sign){
+
+            System.out.println("Do you want to set specific food id, you can input it if you want, or just input 0 and system will set id atuomatically");
+            System.out.print("Input id:");
+            id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
+            if (id == 0){
+                break;
+            }
+            int i = 0;
+            for (Food food:foodList){
+                if (id == food.getId()){
+                    System.out.println("id = "+id+" already exists, please input a new id!");
+                    i = 1;
+                    break;
+                }
+            }
+            if (i == 0){
+                break;
+            }
+        }
+        while (sign1){
+            name = UserInterfaceUtils.getStringInput("Please input the name of this food:",null);
+            int j = 0;
+            for (Food food:foodList){
+                if (name.equals(food.getName())){
+                    System.out.println(name+" already exists, please input a new name!");
+                    j = 1;
+                    break;
+                }
+            }
+            if (j == 0){
+                break;
+            }
+        }
         System.out.println("Please input the price of this food:");
         price = UserInterfaceUtils.getDoubleNumberInput(0.0,Double.MAX_VALUE);
         System.out.println("Please input the number of this food in stock:");
         stockAvailable = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        System.out.println("Please input the number of sales of this food:");
-        sellAmount = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
         Food food = new Food(null,0,0,0,0);
         food.setName(name);
         food.setPrice(price);
         food.setStockAvailable(stockAvailable);
         food.setSellAmount(sellAmount);
-        if (id == 0){
-            DataBaseManager.getFoodDAO().insert(food,true);
-        }else{
-            food.setId(id);
-            DataBaseManager.getFoodDAO().insert(food, false);
+        try{
+            if (id == 0){
+                DataBaseManager.getFoodDAO().insert(food,true);
+            }else{
+                food.setId(id);
+                DataBaseManager.getFoodDAO().insert(food, false);
+            }
+            System.out.println(name + " was added successfully!");
+        }catch (Exception e) {
+            System.out.println("Failed to add new food: "+e.getMessage());
+            System.out.println("Please try again");
         }
-        System.out.println(name + " was added successfully!");
+        queryFood();
+
     }
 
     /**
@@ -223,7 +307,8 @@ public class FoodUI {
      * 2.update all attributes: name, price, stockAvailable, sellAmount
      * 3.feedback
      */
-    public static void updateFood() throws Exception {
+    public static void updateFood(){
+        queryFood();
         int id;
         String name;
         double price;
@@ -231,7 +316,12 @@ public class FoodUI {
         int sellAmount;
         System.out.print("Input the id of the food you want to update:");
         id = UserInterfaceUtils.getIntInput(1,Integer.MAX_VALUE);
-        Food food = DataBaseManager.getFoodDAO().select(id);
+        Food food = null;
+        try {
+            food = DataBaseManager.getFoodDAO().select(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         name = UserInterfaceUtils.getStringInput("Please update the name of this food:",null);
         System.out.println("Please update the price of this food:");
         price = UserInterfaceUtils.getDoubleNumberInput(0.0,Double.MAX_VALUE);
@@ -243,33 +333,62 @@ public class FoodUI {
         food.setPrice(price);
         food.setStockAvailable(stockAvailable);
         food.setSellAmount(sellAmount);
-        DataBaseManager.getFoodDAO().update(id,food);
-        System.out.println(name + " was updated successfully!");
+        try {
+            DataBaseManager.getFoodDAO().update(id,food);
+            System.out.println(name + " was updated successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to add new food: "+e.getMessage());
+            System.out.println("Please try again");
+        }
+        queryFood();
     }
 
     /**
      * when user buy drink, we use this method to update the part of the attributes of this drink
      * only update stockAvailble and sellAmount
      */
-    public static void updateFood(int id, int count) throws Exception {
-        Food food = DataBaseManager.getFoodDAO().select(id);
+    public static void updateFood(int id, int count){
+        Food food = null;
+        try {
+            food = DataBaseManager.getFoodDAO().select(id);
+        } catch (Exception e) {
+            System.out.println("Failed to get the food: "+e.getMessage());
+        }
         int stockAvailble = food.getStockAvailable();
         int sellAmount = food.getSellAmount();
         food.setStockAvailable(stockAvailble - count);
         food.setSellAmount(sellAmount + count);
-        DataBaseManager.getFoodDAO().update(id,food);
+        try {
+            DataBaseManager.getFoodDAO().update(id,food);
+        } catch (Exception e) {
+            System.out.println("Failed to update the food: "+e.getMessage());
+            System.out.println("Please try again");
+        }
+
     }
 
     /**
      * user:admin
      * Delete food based on its id
      */
-    public static void removeFood() throws Exception {
+    public static void removeFood(){
+        queryFood();
         int id;
         System.out.print("Please select the id of the food you want to remove, Input this id:");
         id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        Food food = DataBaseManager.getFoodDAO().select(id);
-        System.out.println(food.getName() + " was updated successfully!");
-        DataBaseManager.getFoodDAO().delete(id);
+        Food food = null;
+        try {
+            food = DataBaseManager.getFoodDAO().select(id);
+        } catch (Exception e) {
+            System.out.println("Failed to get food: "+e.getMessage());
+        }
+        try {
+            DataBaseManager.getFoodDAO().delete(id);
+            System.out.println(food.getName() + " was removed successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to remove the food: "+e.getMessage());
+            System.out.println("Please try again");
+        }
+        queryFood();
     }
 }
