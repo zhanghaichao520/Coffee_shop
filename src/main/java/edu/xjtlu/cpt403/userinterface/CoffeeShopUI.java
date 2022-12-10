@@ -4,7 +4,7 @@ import static edu.xjtlu.cpt403.util.UserInterfaceUtils.showOptionsAndGetChoice;
 
 public class CoffeeShopUI {
 
-    public static void run() {
+    public static void run() throws Exception {
 
         System.out.println("Welcome to Our Coffee Shop!");
         String[] options = {
@@ -26,7 +26,7 @@ public class CoffeeShopUI {
 
     }
 
-    private static void guestStart() {
+    private static void guestStart() throws Exception {
         String[] options = {
                 "Exit.",
                 "Buy Food.",
@@ -46,7 +46,7 @@ public class CoffeeShopUI {
 
     }
 
-    private static void customerStart() {
+    private static void customerStart() throws Exception {
         String[] options = {
                 "Exit.",
                 "Login.",

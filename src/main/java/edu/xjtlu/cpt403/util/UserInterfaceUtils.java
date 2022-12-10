@@ -1,6 +1,7 @@
 package edu.xjtlu.cpt403.util;
 
 import edu.xjtlu.cpt403.entity.User;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Scanner;
 import java.util.function.Function;
@@ -43,6 +44,57 @@ public class UserInterfaceUtils {
             System.out.println("Error. Please input a number between " + lower + " and " + upper + ".");
             return getIntInput(lower, upper);
         }
+        return number;
+    }
+
+    public static double getDoubleNumberInput(double lower,double upper){
+        String input = keyboard.nextLine().trim();
+        double number = 0.0;
+        try {
+            number = Double.parseDouble(input);
+        }
+        catch (NumberFormatException ex) {
+            System.out.println("Error. Please input a number between " + lower + " and " + upper + ".");
+            return getDoubleNumberInput(lower, upper);
+        }
+        if (number < lower || number > upper) {
+            System.out.println("Error. Please input a number between " + lower + " and " + upper + ".");
+            return getDoubleNumberInput(lower, upper);
+        }
+        return number;
+    }
+
+    /**
+     * 获取一个数字得方法
+     * 这个方法不能输入0和负数，只能输入大于0的数
+     * 如果输入exit的话，number返回0
+     */
+    public static int getNumberInput(){
+        Boolean temp = true;
+        int number = 0;
+        System.out.println("Please input the number and it can not be zero!");
+        do{
+            String input = keyboard.nextLine();
+            if (StringUtils.isNumeric(input)){
+                number = Integer.parseInt(input);
+                if (number == 0){
+                    System.out.println("You can not input zero, please input the correct number.");
+                    System.out.println("Please input a number,try again:");
+                }else if (number > 0){
+                    temp = false;
+                }else{
+                    System.out.println("Please enter a positive number");
+                    System.out.println("Please input a number,try again:");
+                }
+            }else if(input == "exit"){
+                number = 0;
+                break;
+            }else{
+                System.out.println("You should input a number, try again please! You can input exit if you do not want to buy anything.");
+                System.out.println("Please input a number,try again:");
+            }
+        }while(temp);
+
         return number;
     }
 

@@ -17,18 +17,31 @@ public class FoodDAO extends AbstractDataBase<Food> {
     final String sheetName = Food.class.getSimpleName();
 
     public static void main(String[] args) throws Exception {
-        FoodDAO dao = new FoodDAO();
-        // test select all
-        List<Food> result = dao.selectAll();
-        System.out.println(JSON.toJSONString(result));
+//        FoodDAO dao = new FoodDAO();
+//        // test select all
+//        List<Food> result = dao.selectAll();
+//        System.out.println(JSON.toJSONString(result));
 
-        // test insert
-        System.out.println(dao.insert(new Food("cookie", 30, 0, 100, 1), true));
-        result = dao.selectAll();
-        System.out.println(JSON.toJSONString(result));
 
-        // test select
-        System.out.println(JSON.toJSONString(dao.select(1)));
+        //test update
+//        Food food = DataBaseManager.getFoodDAO().select(1);
+//        food.setPrice(16.0);
+//        dao.update(1,food);
+//        System.out.println(JSON.toJSONString(result));
+
+//        // test insert
+//        System.out.println(dao.insert(new Food("cookie", 30, 0, 100, 1), true));
+//        result = dao.selectAll();
+//        System.out.println(JSON.toJSONString(result));
+//
+//        // test select
+//        System.out.println(JSON.toJSONString(dao.select(1)));
+
+        //test del
+//        dao.delete(4);
+//        result = dao.selectAll();
+//        System.out.println(JSON.toJSONString(result));
+
     }
     @Override
     public List<Food> selectAll() throws Exception {
@@ -73,7 +86,7 @@ public class FoodDAO extends AbstractDataBase<Food> {
                 throw new RuntimeException(e);
             }
             return id == food.getId() && id > 0;
-        }).map(RowData::getRowIndex).toList());
+        }).map(RowData::getRowIndex).collect(Collectors.toList()));
 
         // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
         rowIndexList.sort(Comparator.reverseOrder());
@@ -96,7 +109,7 @@ public class FoodDAO extends AbstractDataBase<Food> {
                 throw new RuntimeException(e);
             }
             return id == food.getId() && id > 0;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(rowDataList)) {
             return 0;

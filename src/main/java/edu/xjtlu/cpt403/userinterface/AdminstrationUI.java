@@ -13,7 +13,7 @@ public class AdminstrationUI {
     /**
      * 登录流程
      */
-    public static void login() {
+    public static void login() throws Exception {
         String username = getStringInput("Please input the admin username", s -> User.validateName(s));
         String password = getStringInput("Please input the admin password", s -> User.validatePassword(s));
 
@@ -29,7 +29,7 @@ public class AdminstrationUI {
 
     }
 
-    public static void run(String username) {
+    public static void run(String username) throws Exception {
         System.out.println("=============================================================");
         System.out.println("Hi, " + username + " welcome to adminstration UI!");
 
@@ -74,7 +74,7 @@ public class AdminstrationUI {
         while (choice != 0);
     }
 
-    private static void purchaseGoods() {
+    private static void purchaseGoods() throws Exception {
         String[] options = {
                 "Exit.",
                 "Buy food.",
@@ -92,7 +92,7 @@ public class AdminstrationUI {
         while (choice != 0);
     }
 
-    private static void inventoryManagement() {
+    private static void inventoryManagement() throws Exception {
         String[] options = {
                 "Exit.",
                 "Query Food.",
