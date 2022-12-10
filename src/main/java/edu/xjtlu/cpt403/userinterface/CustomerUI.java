@@ -1,5 +1,6 @@
 package edu.xjtlu.cpt403.userinterface;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.entity.Customer;
@@ -296,6 +297,16 @@ public class CustomerUI {
         System.out.println("=============================================================");
         System.out.println("Become our VIP");
 
+        // Check if the customer is already a VIP
+        Customer customer = null;
+        if (currentUser instanceof Customer) {
+            customer = (Customer) currentUser;
+        }
+
+        if(customer.getIsVip() == 1){
+            System.out.println("You are already our VIP!");
+            return;
+        }
         //询问用户是否确认开通VIP
         System.out.println("A VIP can choose to have 5% off discount/ get a stamp on loyalty card on each time of purchase.");
         System.out.println("Only $1688 per year, come to be our VIP for unique discount!");
@@ -313,10 +324,7 @@ public class CustomerUI {
         } while (choice != 0);
 
         //若用户选择开通VIP，则在数据库中将用户VIP状态更改
-        Customer customer = null;
-        if (currentUser instanceof Customer) {
-            customer = (Customer) currentUser;
-        }
+
         customer.setIsVip(1);
         try {
             CustomerDAO dao = new CustomerDAO();
