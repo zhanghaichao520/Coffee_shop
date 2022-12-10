@@ -58,9 +58,9 @@ public class AdminstrationUI {
     private static void bookRoom() {
         String[] options = {
                 "Exit.",
-                "New reservation.",
+                "New Reservation.",
                 "Query All Room.",
-                "Cancel reservation."
+                "Cancel Reservation."
         };
         int choice;
         do {
