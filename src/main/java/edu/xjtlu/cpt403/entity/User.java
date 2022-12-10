@@ -62,6 +62,15 @@ public abstract class User implements Comparable<User>, Serializable {
         return true;
     }
 
+    public static boolean validatePhoneNumber(String phoneNumber){
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be empty.");
+        }
+        if (phoneNumber.length() != 11) {
+            throw new IllegalArgumentException("The phone number should be 11-digit number.");
+        }
+        return true;
+    }
 
     public int getId() {
         return id;

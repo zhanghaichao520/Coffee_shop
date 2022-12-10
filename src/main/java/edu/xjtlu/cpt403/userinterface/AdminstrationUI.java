@@ -58,16 +58,16 @@ public class AdminstrationUI {
     private static void bookRoom() {
         String[] options = {
                 "Exit.",
-                "New reservation.",
-                "Query reservation.",
-                "Cancel reservation."
+                "New Reservation.",
+                "Query All Room.",
+                "Cancel Reservation."
         };
         int choice;
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
                 case 1 : RoomUI.newReservation(); break;
-                case 2 : RoomUI.queryReservation(); break;
+                case 2 : RoomUI.queryReservation(true, true); break;
                 case 3 : RoomUI.cancelReservation(); break;
             }
         }
