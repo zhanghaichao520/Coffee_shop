@@ -58,7 +58,15 @@ public class CoffeeShopUI {
         do {
             choice = showOptionsAndGetChoice(options, 0);
             switch (choice) {
-                case 1 : CustomerUI.login(); break;
+
+                case 1 :
+                    try {
+                        CustomerUI.login();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage() + ", Please try again.");
+                        return;
+                    }
+                    break;
                 case 2 : CustomerUI.regist(); break;
                 case 3 : CustomerUI.changePassword(); break;
                 case 4 : CustomerUI.cancellation(); break;

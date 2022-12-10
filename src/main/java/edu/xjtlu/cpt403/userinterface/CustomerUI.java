@@ -1,10 +1,12 @@
 package edu.xjtlu.cpt403.userinterface;
 
+import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.entity.Customer;
 import edu.xjtlu.cpt403.entity.Room;
 import edu.xjtlu.cpt403.entity.User;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -22,7 +24,6 @@ public class CustomerUI {
             Customer.validateLogin(username, password, DataBaseManager.getCustomerDAO());
         } catch (Exception ex) {
             System.out.println(ex.getMessage() + ", Please try again.");
-            login();
             return;
         }
 
@@ -83,7 +84,7 @@ public class CustomerUI {
         System.out.println("Regist to be our guest");
 
         String username = getStringInput("Set your username: ", s -> User.validateName(s));
-
+        newCustomer.setName(username);
         String [] genderOptions = {
                 "MALE",
                 "FEMALE",
@@ -93,30 +94,31 @@ public class CustomerUI {
         do{
             choice =showOptionsAndGetChoice(genderOptions, 0);
             switch (choice) {
-                case 1 : newCustomer.setGender(genderOptions[0]); break;
-                case 2 : newCustomer.setGender(genderOptions[1]);  break;
-                case 3 : newCustomer.setGender(genderOptions[2]);  break;
+                case 1 : newCustomer.setGender(genderOptions[1]); break;
+                case 2 : newCustomer.setGender(genderOptions[2]);  break;
+                case 3 : newCustomer.setGender(genderOptions[3]);  break;
             }
-        } while (choice != 0);
+        } while (choice == 0);
 
         String password = getStringInput("Set your password: ", s -> User.validatePassword(s));
 
         String password2 = getStringInput("Please re-input your password: ", s -> User.validatePassword(s));
 
-        while (password != password2){
+        while (password.equals(password2) == false){
             System.out.println("Please make sure the twice input are the same!");
             password = getStringInput("Set your password: ", s -> User.validatePassword(s));
             password2 = getStringInput("Please re-input your password: ", s -> User.validatePassword(s));
         }
-
+        newCustomer.setPassWord(password);
         try {
-            DataBaseManager.getCustomerDAO().insert(newCustomer, true);
+            DataBaseManager.getCustomerDAO().insert(newCustomer,true);
         }
         catch (Exception e) {
             System.out.println("Fail in regist." + e.getMessage());
             System.out.println("Please try again.");
             return;
         }
+        System.out.println("Regist successfully!");
 
         // 核心 customer  插入数据
     }
@@ -177,6 +179,7 @@ public class CustomerUI {
             System.out.println("Please try again.");
             return;
         }
+        System.out.println("Password successfully changed.");
         // 核心 customer  修改密码字段
     }
 
@@ -249,13 +252,14 @@ public class CustomerUI {
             customer = (Customer) currentUser;
         }
         try {
-            DataBaseManager.getCustomerDAO().delete(customer);
+            DataBaseManager.getCustomerDAO().delete(customer.getId());
         }
         catch (Exception e) {
             System.out.println("Fail in cancellation." + e.getMessage());
             System.out.println("Please try again.");
             return;
         }
+        System.out.println("User has been cancelled successfully.");
         //没搞懂冻结的机制，如果是改变用户状态的话，那么不仅是customer object要多加一个属性，登陆选项等等也要改，而且从哪个接口解冻呢
         //而且冻结的话，占内存，如果要做些附加功能，可以考虑一下长期未登录用户的自动注销
 
@@ -308,13 +312,15 @@ public class CustomerUI {
         }
         customer.setIsVip(1);
         try {
-            DataBaseManager.getCustomerDAO().update(customer.getId(), customer);
+            CustomerDAO dao = new CustomerDAO();
+            dao.update(currentUser.getId(), customer);
         }
         catch (Exception e) {
             System.out.println("Fail in activate VIP status." + e.getMessage());
             System.out.println("Please try again.");
             return;
         }
+        System.out.println("Congratulations! You are our VIP now.");
         // 核心 customer  修改VIP字段
     }
 
