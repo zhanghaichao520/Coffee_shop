@@ -90,6 +90,7 @@ public class CustomerUI {
         String username = getStringInput("Set your username: ", s -> User.validateName(s));
         newCustomer.setName(username);
         String [] genderOptions = {
+
                 "MALE",
                 "FEMALE",
                 "SECRET"
@@ -98,11 +99,11 @@ public class CustomerUI {
         do{
             choice =showOptionsAndGetChoice(genderOptions, 0);
             switch (choice) {
-                case 1 : newCustomer.setGender(genderOptions[1]); break;
-                case 2 : newCustomer.setGender(genderOptions[2]);  break;
-                case 3 : newCustomer.setGender(genderOptions[3]);  break;
+                case 1 : newCustomer.setGender(genderOptions[0]); break;
+                case 2 : newCustomer.setGender(genderOptions[1]);  break;
+                case 3 : newCustomer.setGender(genderOptions[2]);  break;
             }
-        } while (choice == 0);
+        } while (choice == -1);
 
         String phoneNumeber = getStringInput("Please input your phone number: ", s -> User.validatePhoneNumber(s));
         newCustomer.setPhoneNumber(phoneNumeber);
