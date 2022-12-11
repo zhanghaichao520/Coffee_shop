@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 public class DrinkDAO extends AbstractDataBase<Drink> {
     final String sheetName = Drink.class.getSimpleName();
@@ -76,7 +78,7 @@ public class DrinkDAO extends AbstractDataBase<Drink> {
                 throw new RuntimeException(e);
             }
             return id == drink.getId() && id > 0;
-        }).map(RowData::getRowIndex).toList());
+        }).map(RowData::getRowIndex).collect(Collectors.toList()));
 
         // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
         rowIndexList.sort(Comparator.reverseOrder());
@@ -99,7 +101,7 @@ public class DrinkDAO extends AbstractDataBase<Drink> {
                 throw new RuntimeException(e);
             }
             return id == drink.getId() && id > 0;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(rowDataList)) {
             return 0;
