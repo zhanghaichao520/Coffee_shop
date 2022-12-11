@@ -3,12 +3,11 @@ package edu.xjtlu.cpt403.userinterface;
 
 import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
-import edu.xjtlu.cpt403.entity.Customer;
-import edu.xjtlu.cpt403.entity.Room;
-import edu.xjtlu.cpt403.entity.User;
+import edu.xjtlu.cpt403.entity.*;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static edu.xjtlu.cpt403.util.UserInterfaceUtils.*;
@@ -42,6 +41,8 @@ public class CustomerUI {
                 "Buy Food.",
                 "Buy Drink.",
                 "Reserve Room.",
+                "Show My Personal Infomation.",
+                "Check My History Orders.",
                 "Query My Reservation.",
                 "Query All Available Room.",
                 "Cancel Reservation.",
@@ -56,15 +57,69 @@ public class CustomerUI {
                 case 2 : FoodUI.buyFood(); break;
                 case 3 : DrinkUI.buyDrink(); break;
                 case 4 : RoomUI.newReservation(); break;
-                case 5 : RoomUI.queryReservation(false, true); break;
-                case 6 : RoomUI.queryReservation(true, false); break;
-                case 7 : RoomUI.cancelReservation(); break;
-                case 8 : changePassword(); break;
-                case 9 : cancellation(); break;
+                case 5 : showPersonalInformation(); break;
+                case 6 : checkHistortOrders(); break;
+                case 7 : RoomUI.queryReservation(false, true); break;
+                case 8 : RoomUI.queryReservation(true, false); break;
+                case 9 : RoomUI.cancelReservation(); break;
+                case 10 : changePassword(); break;
+                case 11 : cancellation(); break;
 
             }
         }
         while (choice != 0);
+    }
+
+    private static boolean logginStatusChecked() {
+        if (UserInterfaceUtils.getCurrentUser() == null) {
+            System.out.println("You have not logged in, please login and then retry!");
+            return false;
+        }
+
+        if (UserInterfaceUtils.getCurrentUser() instanceof AdminUser) {
+            System.out.println("Admin information is not supported");
+            return false;
+        }
+
+        return true;
+    }
+    private static void showPersonalInformation() {
+        System.out.println("=============================================================");
+        System.out.println("Personal Information: ");
+
+        // if check loggin status unpass
+        if (!logginStatusChecked()) {
+            return;
+        }
+
+        Customer customer = (Customer) UserInterfaceUtils.getCurrentUser();
+        System.out.println("Your ID: " + customer.getId());
+        System.out.println("Your Name: " + customer.getName());
+        System.out.println("Your PhoneNumber: " + customer.getPhoneNumber());
+        System.out.println("Your Gender: " + customer.getGender());
+        System.out.println("Your Vip Status: " + VipStatusEnum.getByStatus(customer.getIsVip()));
+        System.out.println("Your loyaltyCard: " + customer.getLoyaltyCard());
+        System.out.println("=============================================================");
+    }
+
+    private static void checkHistortOrders() {
+        System.out.println("=============================================================");
+        // if check loggin status unpass
+        if (!logginStatusChecked()) {
+            return;
+        }
+
+        System.out.println("Your History Orders: ");
+        List<SalesRecord> salesRecords = DataBaseManager.getSalesRecordDAO().findByUserId(UserInterfaceUtils.getCurrentUser().getId());
+        if (CollectionUtils.isEmpty(salesRecords)) {
+            System.out.println("Your Order record is empty! Please have a look our delicious food and drinks");
+            return;
+        }
+        int idx = 1;
+        for (SalesRecord salesRecord : salesRecords) {
+            System.out.println((idx ++ ) + ": " + salesRecord.toCustomerViewString());
+        }
+        System.out.println("=============================================================");
     }
 
     /**

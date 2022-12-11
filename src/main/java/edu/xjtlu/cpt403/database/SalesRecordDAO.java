@@ -141,9 +141,20 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
         throw new Exception("salesRecord id = " + id + " not find in our system");
     }
 
-
-
-
+    public List<SalesRecord> findByUserId(int userId) {
+        List<SalesRecord> result = new ArrayList<>();
+        try {
+            List<SalesRecord> salesRecordList = selectAll();
+            for (SalesRecord salesrecord : salesRecordList) {
+                if (userId == salesrecord.getUserid()) {
+                    result.add(salesrecord);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("read sale recorde exception: " + e.getMessage());
+        }
+        return result;
+    }
 
     @Override
     protected String getSheetName() { return sheetName;}
