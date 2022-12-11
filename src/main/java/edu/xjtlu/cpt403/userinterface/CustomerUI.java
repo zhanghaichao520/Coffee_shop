@@ -1,5 +1,6 @@
 package edu.xjtlu.cpt403.userinterface;
 
+
 import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.entity.Customer;

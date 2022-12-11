@@ -1,6 +1,13 @@
 package edu.xjtlu.cpt403.entity;
 
 
+import edu.xjtlu.cpt403.database.DataBaseManager;
+import edu.xjtlu.cpt403.database.SalesRecordDAO;
+import edu.xjtlu.cpt403.util.DateUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class SalesRecord {
 

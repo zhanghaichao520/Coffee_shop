@@ -146,8 +146,6 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
 
 
     @Override
-    protected String getSheetName() {
-        return null;
-    }
+    protected String getSheetName() { return sheetName;}
 }
 
