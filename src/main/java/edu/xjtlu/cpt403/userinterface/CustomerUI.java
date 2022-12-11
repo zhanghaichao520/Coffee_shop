@@ -151,14 +151,14 @@ public class CustomerUI {
                 "SECRET"
         };
         int choice;
-        do{
-            choice =showOptionsAndGetChoice(genderOptions, 0);
-            switch (choice) {
-                case 1 : newCustomer.setGender(genderOptions[0]); break;
-                case 2 : newCustomer.setGender(genderOptions[1]);  break;
-                case 3 : newCustomer.setGender(genderOptions[2]);  break;
-            }
-        } while (choice == -1);
+
+        choice =showOptionsAndGetChoice(genderOptions, 0);
+        switch (choice) {
+            case 0 : newCustomer.setGender(genderOptions[0]); break;
+            case 1 : newCustomer.setGender(genderOptions[1]);  break;
+            case 2 : newCustomer.setGender(genderOptions[2]);  break;
+        }
+
 
         String phoneNumeber = getStringInput("Please input your phone number: ", s -> User.validatePhoneNumber(s));
         newCustomer.setPhoneNumber(phoneNumeber);

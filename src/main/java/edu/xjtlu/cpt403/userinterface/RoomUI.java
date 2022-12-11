@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -101,10 +102,10 @@ public class RoomUI {
             DataBaseManager.getRoomDAO().update(room.getId(), room);
         } catch (Exception e) {
             // 异常提示
-            System.out.println("newReservation failed: " + e.getMessage());
+            System.out.println("Room Reservation Failed: " + e.getMessage());
             System.out.println("Please try agagin!");
         } finally {
-            System.out.println("newReservation room end, result: " + room.toString());
+            System.out.println("nCongratulations, room reservation success, your reservation information is: " + room);
             System.out.println("=============================================================");
         }
     }
@@ -130,11 +131,11 @@ public class RoomUI {
             // 排序
             Collections.sort(roomList);
             // 显示
-
+            List<Room> showList = new ArrayList<>();
             for (Room room : roomList) {
                 // 可预定房间单独展示 Rooms can be booked for individual display
                 if (room.isAvailable() && displayAvailable) {
-                    System.out.println(room);
+                    showList.add(room);
                     continue;
                 }
 
@@ -148,8 +149,18 @@ public class RoomUI {
                     continue;
                 }
 
-                System.out.println(room);
+                showList.add(room);
             }
+
+            if (CollectionUtils.isEmpty(showList)) {
+                System.out.println("No room information was found!");
+            } else {
+                int idx = 1;
+                for (Room room : showList) {
+                    System.out.println((idx ++ ) + ":" + room);
+                }
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
