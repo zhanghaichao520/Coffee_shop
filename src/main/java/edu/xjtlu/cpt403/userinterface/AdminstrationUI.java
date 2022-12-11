@@ -37,7 +37,8 @@ public class AdminstrationUI {
                 "Exit.",
                 "Inventory management.",
                 "Purchase of goods.",
-                "Reservation room."
+                "Reservation room.",
+                "SalesRecord review"
         };
         int choice;
         do {
@@ -45,8 +46,8 @@ public class AdminstrationUI {
             switch (choice) {
                 case 1 : inventoryManagement(); break;
                 case 2 : purchaseGoods(); break;
-                case 3 : bookRoom();
-                break;
+                case 3 : bookRoom();  break;
+                case 4 : querySaleRecord(); break;
             }
         }
         while (choice != 0);
@@ -55,6 +56,24 @@ public class AdminstrationUI {
         CustomerUI.exitLogin();
     }
 
+    private static void querySaleRecord() {
+        String[] options = {
+                "Exit.",
+                "Query Current Days SaleRecord.",
+                "Query This Week SaleRecord.",
+                "Query This Month SaleRecord."
+        };
+        int choice;
+        do {
+            choice = showOptionsAndGetChoice(options, 0);
+            switch (choice) {
+                case 1 : SalesRecordUI.salesRecordView(0); break;
+                case 2 : SalesRecordUI.salesRecordView(7); break;
+                case 3 : SalesRecordUI.salesRecordView(30); break;
+            }
+        }
+        while (choice != 0);
+    }
     private static void bookRoom() {
         String[] options = {
                 "Exit.",
