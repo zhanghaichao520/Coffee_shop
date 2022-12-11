@@ -18,8 +18,8 @@ public class CustomerUI {
      * 登录流程
      */
     public static void login() throws Exception {
-        String username = getStringInput("Please input your username", s -> User.validateName(s));
-        String password = getStringInput("Please input your password", s -> User.validatePassword(s));
+        String username = getStringInput("Please input your username", User::validateName);
+        String password = getStringInput("Please input your password", User::validatePassword);
 
         try {
             Customer.validateLogin(username, password, DataBaseManager.getCustomerDAO());
