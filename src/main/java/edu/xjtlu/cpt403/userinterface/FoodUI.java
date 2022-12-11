@@ -300,10 +300,10 @@ public class FoodUI {
         queryFood();
 
     }
-git
+
     /**
      * user:admin
-     * 1.determine which one we want to update
+      1.determine which one we want to update
      * 2.update all attributes: name, price, stockAvailable, sellAmount
      * 3.feedback
      */
