@@ -226,7 +226,13 @@ public class FoodUI {
         salesRecord.setProductID(foodID);
         salesRecord.setProductName(foodName);
         salesRecord.setBuyNumber(count);
-        salesRecord.setUserid(user.getId());
+        if(user == null) {
+            salesRecord.setUserid(-2);
+        } else if (user instanceof AdminUser) {
+            salesRecord.setUserid(-1);
+        } else {
+            salesRecord.setUserid(user.getId());
+        }
         salesRecord.setPayCost(totalPrice);
         salesRecord.setPayTime(DateUtils.getDate(new Date()));
         try{
