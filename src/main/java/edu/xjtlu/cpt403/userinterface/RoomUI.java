@@ -223,7 +223,7 @@ public class RoomUI {
         } catch (Exception e) {
             // 异常提示
             System.out.println("newReservation failed: " + e.getMessage());
-            System.out.println("Please try agagin!");
+            System.out.println("Please try again!");
         } finally {
             System.out.println("newReservation room end, result: " + room.toString());
             System.out.println("=============================================================");

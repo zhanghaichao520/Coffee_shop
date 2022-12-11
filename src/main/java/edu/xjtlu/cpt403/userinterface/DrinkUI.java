@@ -50,7 +50,8 @@ public class DrinkUI {
      * 5.update the status of (customer and) drink
      * 6.feedback
      */
-    public static void buyDrink() throws Exception {
+    public static void buyDrink(){
+        queryDrink();
         User user = UserInterfaceUtils.getCurrentUser();
 
         /**
@@ -66,16 +67,25 @@ public class DrinkUI {
          */
         int drinkID;
         do{
+            System.out.println("Now you should input the id of the drink you want to buy!");
             drinkID = UserInterfaceUtils.getNumberInput();
             if (drinkID == 0){
-                CoffeeShopUI.run();
+                try {
+                    CoffeeShopUI.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
-            if (DataBaseManager.getDrinkDAO().select(drinkID) == null){
-                System.out.println("Wrong drinkID! The reason is that product does not exist or has been removed!");
-                System.out.println("Please try to buy another goods!");
-            }else {
-                break;
+            try {
+                if (DataBaseManager.getDrinkDAO().select(drinkID) == null){
+                    System.out.println("Wrong drinkID! The reason is that product does not exist or has been removed!");
+                    System.out.println("Please try to buy another goods!");
+                }else {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }while (true);
 
@@ -85,8 +95,12 @@ public class DrinkUI {
          * make sure users want to buy how many drink
          * calculate the results and update the stockAvailable and sellAmount of drink(drinkID)
          */
-        Drink drink;
-        drink = DataBaseManager.getDrinkDAO().select(drinkID);
+        Drink drink = null;
+        try {
+            drink = DataBaseManager.getDrinkDAO().select(drinkID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         double price = drink.getPrice();
         String drinkName = drink.getName();
         int stockAvailable = drink.getStockAvailable();
@@ -111,12 +125,14 @@ public class DrinkUI {
             }
         }
         if (count == 0){
-            CoffeeShopUI.run();
+            try {
+                CoffeeShopUI.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
         totalPrice = price * count;
-
-
 
         /**
          * step 4:
@@ -126,7 +142,12 @@ public class DrinkUI {
          */
         if (user instanceof Customer){
             int userID = user.getId();
-            Customer customer = DataBaseManager.getCustomerDAO().select(userID);
+            Customer customer = null;
+            try {
+                customer = DataBaseManager.getCustomerDAO().select(userID);
+            } catch (Exception e) {
+                System.out.println("Faild to get the information of customer: "+e.getMessage());
+            }
             int isVip = customer.getIsVip();
             int loyaltyCardNumber = customer.getLoyaltyCard();
             if (loyaltyCardNumber == 10){
@@ -139,10 +160,19 @@ public class DrinkUI {
                 if (exchangeOrnot == 1){
                     loyaltyCardNumber = 0;
                     customer.setLoyaltyCard(loyaltyCardNumber);
-                    Drink freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    Drink freeDrink = null;
+                    try {
+                        freeDrink = DataBaseManager.getDrinkDAO().select(666);
+                    } catch (Exception e) {
+                        System.out.println("Failed to get the free drink: "+e.getMessage());
+                    }
                     int stockDrink = freeDrink.getStockAvailable();
                     int sellAmountDrink = freeDrink.getSellAmount();
-                    DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                    try {
+                        DataBaseManager.getDrinkDAO().update(666,new Drink("Secret",0.0,666,stockDrink-1,sellAmountDrink + 1));
+                    } catch (Exception e) {
+                        System.out.println("Faild to update the details of free drink: "+e.getMessage());
+                    }
                 }
             }
             if (isVip == 1){
@@ -171,7 +201,11 @@ public class DrinkUI {
              * update the status of customer and drink
              * give a message to tell customer that they finished their shopping
              */
-            DataBaseManager.getCustomerDAO().update(userID,customer);
+            try {
+                DataBaseManager.getCustomerDAO().update(userID,customer);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             updateDrink(drinkID,count);
         }else  if (user instanceof AdminUser){
             updateDrink(drinkID,count);
@@ -188,35 +222,79 @@ public class DrinkUI {
      * 2.add it
      * 3.feedback
      */
-    public static void addDrink() throws Exception {
-        int id;
-        String name;
+    public static void addDrink(){
+        queryDrink();
+        int id = 0;
+        String name = null;
         double price;
         int stockAvailable;
-        int sellAmount;
+        int sellAmount = 0;
+        boolean sign = true;
+        boolean sign1 = true;
+        List<Drink> drinkList = null;
+        try {
+            drinkList = DataBaseManager.getDrinkDAO().selectAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Please input the details about drink you want to add.");
-        System.out.println("Do you want to set specific drink id, if you want you can input it, or just input 0 and system will set id atuomatically");
-        System.out.print("Input id:");
-        id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        name = UserInterfaceUtils.getStringInput("Please input the name of this drink:",null);
+        while (sign){
+
+            System.out.println("Do you want to set specific drink id, you can input it if you want , or just input 0 and system will set id atuomatically");
+            System.out.print("Input id:");
+            id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
+            if (id == 0){
+                break;
+            }
+            int i = 0;
+            for (Drink drink:drinkList){
+                if (id == drink.getId()){
+                    System.out.println("id = "+id+" already exists, please input a new id!");
+                    i = 1;
+                    break;
+                }
+            }
+            if (i == 0){
+                break;
+            }
+        }
+        while (sign1){
+            name = UserInterfaceUtils.getStringInput("Please input the name of this drink:",null);
+            int j = 0;
+            for (Drink drink:drinkList){
+                if (name.equals(drink.getName())){
+                    System.out.println(name+" already exists, please input a new name!");
+                    j = 1;
+                    break;
+                }
+            }
+            if (j == 0){
+                break;
+            }
+        }
+
         System.out.println("Please input the price of this drink:");
         price = UserInterfaceUtils.getDoubleNumberInput(0.0,Double.MAX_VALUE);
         System.out.println("Please input the number of this food in stock:");
         stockAvailable = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        System.out.println("Please input the number of sales of this drink:");
-        sellAmount = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
         Drink drink = new Drink(null,0,0,0,0);
         drink.setName(name);
         drink.setPrice(price);
         drink.setStockAvailable(stockAvailable);
         drink.setSellAmount(sellAmount);
-        if (id == 0){
-            DataBaseManager.getDrinkDAO().insert(drink,true);
-        }else{
-            drink.setId(id);
-            DataBaseManager.getDrinkDAO().insert(drink, false);
+        try{
+            if (id == 0){
+                DataBaseManager.getDrinkDAO().insert(drink,true);
+            }else{
+                drink.setId(id);
+                DataBaseManager.getDrinkDAO().insert(drink, false);
+            }
+            System.out.println(name + " was added successfully!");
+        }catch (Exception e) {
+            System.out.println("Failed to add new drink: "+e.getMessage());
+            System.out.println("Please try again");
         }
-        System.out.println(name + " was added successfully!");
+        queryDrink();
 
     }
 
@@ -226,7 +304,8 @@ public class DrinkUI {
      * 2.update all attributes of this drink
      * 3.feedback
      */
-    public static void updateDrink() throws Exception {
+    public static void updateDrink(){
+        queryDrink();
         int id;
         String name;
         double price;
@@ -234,7 +313,12 @@ public class DrinkUI {
         int sellAmount;
         System.out.print("Input the id of the drink you want to update:");
         id = UserInterfaceUtils.getIntInput(1,Integer.MAX_VALUE);
-        Drink drink = DataBaseManager.getDrinkDAO().select(id);
+        Drink drink = null;
+        try {
+            drink = DataBaseManager.getDrinkDAO().select(id);
+        } catch (Exception e) {
+            System.out.println("Failed to get drink: "+e.getMessage());
+        }
         name = UserInterfaceUtils.getStringInput("Please update the name of this drink:",null);
         System.out.println("Please update the price of this drink:");
         price = UserInterfaceUtils.getDoubleNumberInput(0.0,Double.MAX_VALUE);
@@ -246,21 +330,38 @@ public class DrinkUI {
         drink.setPrice(price);
         drink.setStockAvailable(stockAvailable);
         drink.setSellAmount(sellAmount);
-        DataBaseManager.getDrinkDAO().update(id,drink);
-        System.out.println(name + " was updated successfully!");
+        try {
+            DataBaseManager.getDrinkDAO().update(id,drink);
+            System.out.println(name + " was updated successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to update drink: "+e.getMessage());
+            System.out.println("Please try again");
+        }
+        queryDrink();
+
     }
 
     /**
      * when user buy drink, we use this method to update the part of the attributes of this drink
      * only update stockAvailble and sellAmount
      */
-    public static void updateDrink(int id, int count) throws Exception {
-        Drink drink = DataBaseManager.getDrinkDAO().select(id);
+    public static void updateDrink(int id, int count){
+        Drink drink = null;
+        try {
+            drink = DataBaseManager.getDrinkDAO().select(id);
+        } catch (Exception e) {
+            System.out.println("Failed to get drink: "+e.getMessage());
+        }
         int stockAvailble = drink.getStockAvailable();
         int sellAmount = drink.getSellAmount();
         drink.setStockAvailable(stockAvailble - count);
         drink.setSellAmount(sellAmount + count);
-        DataBaseManager.getDrinkDAO().update(id,drink);
+        try {
+            DataBaseManager.getDrinkDAO().update(id,drink);
+        } catch (Exception e) {
+            System.out.println("Failed to update drink: "+e.getMessage());
+            System.out.println("Please try again");
+        }
     }
 
     /**
@@ -270,13 +371,24 @@ public class DrinkUI {
      * delete this drink
      * feedback
      */
-    public static void removeDrink() throws Exception {
+    public static void removeDrink(){
+        queryDrink();
         int id;
         System.out.print("Please select the id of the drink you want to remove, Input this id:");
         id = UserInterfaceUtils.getIntInput(0,Integer.MAX_VALUE);
-        Drink drink = DataBaseManager.getDrinkDAO().select(id);
-        System.out.println(drink.getName() + " was updated successfully!");
-        DataBaseManager.getDrinkDAO().delete(id);
-
+        Drink drink = null;
+        try {
+            drink = DataBaseManager.getDrinkDAO().select(id);
+        } catch (Exception e) {
+            System.out.println("Failed to get drink: "+e.getMessage());
+        }
+        try {
+            DataBaseManager.getDrinkDAO().delete(id);
+            System.out.println(drink.getName() + " was removed successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to remove drink: "+e.getMessage());
+            System.out.println("Please try again");
+        }
+        queryDrink();
     }
 }
