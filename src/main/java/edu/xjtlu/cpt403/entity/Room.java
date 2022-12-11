@@ -127,13 +127,9 @@ public class Room implements Comparable<Room>, Serializable {
                 return false;
             }
 
-            // 检测预定的用户是否存在
-            if (DataBaseManager.getCustomerDAO().select(id) == null) {
-                return false;
-            }
-
-            // 如果预定的日期是今天， 那么也是 unavailable
-            if (bookDate.equals(DateUtils.getDate(new Date()))) {
+            // 如果预定的日期是今天, 且预定的用户不为空 unavailable
+            if ((DataBaseManager.getCustomerDAO().select(id) != null)
+                && (bookDate.equals(DateUtils.getDate(new Date())))) {
                 return false;
             }
 
