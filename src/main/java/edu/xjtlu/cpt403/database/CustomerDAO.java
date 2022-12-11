@@ -121,6 +121,15 @@ public class CustomerDAO extends AbstractDataBase<Customer> {
         return update(rowDataList, convert(object));
     }
 
+    public boolean userExist(int id) {
+        try {
+            Customer c = select(id);
+            return c != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public Customer select(int id) throws Exception {
         List<Customer> customers = selectAll();

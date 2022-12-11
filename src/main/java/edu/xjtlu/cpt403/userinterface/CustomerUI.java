@@ -252,16 +252,16 @@ public class CustomerUI {
      */
     public static void cancellation(){
         //若未登录，提醒登录
-        if (UserInterfaceUtils.getCurrentUser() == null) {
-            System.out.println("Please Login first!");
-            try {
-                login();
-            } catch (Exception e) {
-                System.out.println("Fail in log in." + e.getMessage());
-                System.out.println("Please try again.");
-                return;
-            }
+        String username = getStringInput("Please input your username", User::validateName);
+        String password = getStringInput("Please input your password", User::validatePassword);
+
+        try {
+            Customer.validateLogin(username, password, DataBaseManager.getCustomerDAO());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage() + ", Please try again.");
+            return;
         }
+
 
         //获取已登陆用户的信息
         User currentUser = UserInterfaceUtils.getCurrentUser();
@@ -289,14 +289,11 @@ public class CustomerUI {
                 "Yes, I want to cancel my information.",
                 "No, I do not want to cancel."
         };
-        int choice;
-        do{
-            choice =showOptionsAndGetChoice(confirmOptions, 0);
-            switch (choice) {
-                case 1 : break;
-                case 2 : return;
-            }
-        } while (choice != 0);
+        int choice = showOptionsAndGetChoice(confirmOptions, 0);
+
+        if (choice == 1) {
+            return;
+        }
 
         //注销操作
         //取消客户预订
