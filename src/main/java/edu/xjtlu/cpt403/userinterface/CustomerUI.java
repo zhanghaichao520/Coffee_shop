@@ -112,7 +112,7 @@ public class CustomerUI {
         System.out.println("Your History Orders: ");
         List<SalesRecord> salesRecords = DataBaseManager.getSalesRecordDAO().findByUserId(UserInterfaceUtils.getCurrentUser().getId());
         if (CollectionUtils.isEmpty(salesRecords)) {
-            System.out.println("Your Order record is empty! Please have a look our delicious food and drinks");
+            System.out.println("Your Order record is empty! You can go to our homepage to find more products!");
             return;
         }
         int idx = 1;

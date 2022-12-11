@@ -35,14 +35,17 @@ public class RoomUI {
      */
     public static void newReservation() {
         System.out.println("=============================================================");
-        System.out.println("Let's start newReservation room");
+        System.out.println("Let's start reservation room");
         /** No access for non-logged-in users */
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
             return;
         }
         /** 1. Show all room lists first */
-        queryReservation(true, false);
+        List<Room> roomList = queryReservation(true, false);
+        if (CollectionUtils.isEmpty(roomList)) {
+            return;
+        }
 
         /** 2. The user is asked to enter the number of the room to be reserved, which can be checked or not (the second parameter is passed directly as null) */
         String roomNumber = UserInterfaceUtils.getStringInput("Please enter the room number you want to reserve", new Function<String, Boolean>() {
@@ -105,20 +108,22 @@ public class RoomUI {
             System.out.println("Room Reservation Failed: " + e.getMessage());
             System.out.println("Please try agagin!");
         } finally {
-            System.out.println("nCongratulations, room reservation success, your reservation information is: " + room);
+            System.out.println("Congratulations, room reservation success, your reservation information is: " + room);
             System.out.println("=============================================================");
         }
     }
 
 
-    public static void queryReservation(boolean displayAvailable, boolean displayReserved) {
+    public static List<Room> queryReservation(boolean displayAvailable, boolean displayReserved) {
+        List<Room> showList = new ArrayList<>();
+
         System.out.println("=============================================================");
         System.out.println("Let's start queryReservation room");
 
         //  没有登录禁止查看 No login to prevent viewing
         if (UserInterfaceUtils.getCurrentUser() == null) {
             System.out.println("Please Login first!");
-            return;
+            return showList;
         }
         RoomDAO roomDAO = DataBaseManager.getRoomDAO();
 
@@ -126,12 +131,12 @@ public class RoomUI {
             List<Room> roomList = roomDAO.selectAll();
             if (CollectionUtils.isEmpty(roomList)) {
                 System.out.println("The room is empty! ");
-                return;
+                return showList;
             }
             // 排序
             Collections.sort(roomList);
             // 显示
-            List<Room> showList = new ArrayList<>();
+
             for (Room room : roomList) {
                 // 可预定房间单独展示 Rooms can be booked for individual display
                 if (room.isAvailable() && displayAvailable) {
@@ -168,6 +173,7 @@ public class RoomUI {
             System.out.println("=============================================================");
         }
 
+        return showList;
     }
 
     /**
