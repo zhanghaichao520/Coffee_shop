@@ -249,7 +249,7 @@ public class RoomUI {
             DataBaseManager.getRoomDAO().update(room.getId(), room);
         } catch (Exception e) {
             // 异常提示    Exception alerts
-            System.out.println("newReservation failed: " + e.getMessage());
+            System.out.println(room + "cancel reservation failed: " + e.getMessage());
             System.out.println("Please try again!");
         } finally {
             System.out.println("newReservation room end, result: " + room.toString());

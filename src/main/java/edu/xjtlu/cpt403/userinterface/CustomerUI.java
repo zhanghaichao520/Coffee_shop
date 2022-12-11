@@ -46,8 +46,7 @@ public class CustomerUI {
                 "Query My Reservation.",
                 "Query All Available Room.",
                 "Cancel Reservation.",
-                "Change Password.",
-                "Cancel Account."
+                "Change Password."
         };
         int choice;
         do {
@@ -63,8 +62,6 @@ public class CustomerUI {
                 case 8 : RoomUI.queryReservation(true, false); break;
                 case 9 : RoomUI.cancelReservation(); break;
                 case 10 : changePassword(); break;
-                case 11 : cancellation(); break;
-
             }
         }
         while (choice != 0);
@@ -306,6 +303,11 @@ public class CustomerUI {
         if (!CollectionUtils.isEmpty(reservedRoom)) {
             for (Room room : reservedRoom) {
                 room.setBookUserid(0); //取消预定， 直接把预定用户id更新为0就行
+                try {
+                    DataBaseManager.getRoomDAO().update(room.getId(), room);
+                } catch (Exception e) {
+                    System.out.println(room + "cancel reservation failed: " + e.getMessage());
+                }
             }
         }
 
