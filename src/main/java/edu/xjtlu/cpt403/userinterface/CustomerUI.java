@@ -1,6 +1,6 @@
 package edu.xjtlu.cpt403.userinterface;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.entity.Customer;
