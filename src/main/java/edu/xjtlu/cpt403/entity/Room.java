@@ -83,14 +83,14 @@ public class Room implements Comparable<Room>, Serializable {
 
     @Override
     public String toString() {
-        return "" +
+        return "{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", bookDate='" + bookDate + '\'' +
                 ", bookUserid=" + bookUserid +
                 ", maxCapacity=" + maxCapacity +
-                ", status=" + (isAvailable()  ? "Available" : "Reserved"  ) ;
+                ", status=" + (isAvailable()  ? "Available" : "Reserved " )  + "}" ;
     }
 
     public static List<Room> getReservedRoomByUserId(int userId) {
@@ -127,8 +127,9 @@ public class Room implements Comparable<Room>, Serializable {
                 return false;
             }
 
-            // 如果预定的日期是今天, 且预定的用户不为空 unavailable
-            if ((DataBaseManager.getCustomerDAO().select(id) != null)
+
+            // 如果预定的日期是今天, 且预定的用户存在， 则房间为unavailable
+            if ((DataBaseManager.getCustomerDAO().userExist(bookUserid))
                 && (bookDate.equals(DateUtils.getDate(new Date())))) {
                 return false;
             }
