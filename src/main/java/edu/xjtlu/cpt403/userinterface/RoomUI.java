@@ -108,7 +108,7 @@ public class RoomUI {
             System.out.println("Room Reservation Failed: " + e.getMessage());
             System.out.println("Please try agagin!");
         } finally {
-            System.out.println("Congratulations! Reservation success! Your reservation information is: " + room);
+            System.out.println("Congratulations! Reservation success! \n Your reservation information is: " + room);
             System.out.println("=============================================================");
         }
     }
