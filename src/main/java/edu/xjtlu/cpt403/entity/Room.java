@@ -83,15 +83,14 @@ public class Room implements Comparable<Room>, Serializable {
 
     @Override
     public String toString() {
-        return "Room{" +
+        return "" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", bookDate='" + bookDate + '\'' +
                 ", bookUserid=" + bookUserid +
                 ", maxCapacity=" + maxCapacity +
-                ", status=" + (isAvailable()  ? "Available" : "Reserved"  ) +
-                '}';
+                ", status=" + (isAvailable()  ? "Available" : "Reserved"  ) ;
     }
 
     public static List<Room> getReservedRoomByUserId(int userId) {
