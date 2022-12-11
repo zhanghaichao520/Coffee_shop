@@ -4,10 +4,12 @@ import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.database.DrinkDAO;
 import edu.xjtlu.cpt403.database.FoodDAO;
 import edu.xjtlu.cpt403.entity.*;
+import edu.xjtlu.cpt403.util.DateUtils;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class DrinkUI {
@@ -214,6 +216,21 @@ public class DrinkUI {
         }
         System.out.println("Payment completed!");
         System.out.println("Have a nice day and See you next time~");
+        System.out.println("==================================================");
+
+        SalesRecord salesRecord = new SalesRecord();
+        salesRecord.setProductID(drinkID);
+        salesRecord.setProductName(drinkName);
+        salesRecord.setBuyNumber(count);
+        salesRecord.setUserid(user.getId());
+        salesRecord.setPayCost(totalPrice);
+        salesRecord.setPayTime(DateUtils.getDate(new Date()));
+        try{
+            DataBaseManager.getSalesRecordDAO().insert(salesRecord,true);
+        }catch (Exception e) {
+            System.out.println("Failed to add new SalesRecord: "+e.getMessage());
+            System.out.println("Please try again");
+        }
     }
 
 

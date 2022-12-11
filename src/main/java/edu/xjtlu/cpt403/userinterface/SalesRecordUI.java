@@ -76,4 +76,8 @@ public class SalesRecordUI {
          System.out.println("=============================================================");
          System.out.println("The following is the SalesRecord:");
      }
+
+     public static void addSalesRecord() {
+
+     }
 }
