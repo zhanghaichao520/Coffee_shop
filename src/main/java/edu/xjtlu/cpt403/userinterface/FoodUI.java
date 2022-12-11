@@ -1,15 +1,20 @@
 package edu.xjtlu.cpt403.userinterface;
 
+import com.alibaba.fastjson.JSON;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.database.RoomDAO;
+import edu.xjtlu.cpt403.database.SalesRecordDAO;
 import edu.xjtlu.cpt403.entity.*;
+import edu.xjtlu.cpt403.util.DateUtils;
 import edu.xjtlu.cpt403.util.UserInterfaceUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import edu.xjtlu.cpt403.database.FoodDAO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -215,8 +220,23 @@ public class FoodUI {
         }
         System.out.println("payment completed!");
         System.out.println("Have a nice day and see you next time~");
+        System.out.println("==================================================");
 
+        SalesRecord salesRecord = new SalesRecord();
+        salesRecord.setProductID(foodID);
+        salesRecord.setProductName(foodName);
+        salesRecord.setBuyNumber(count);
+        salesRecord.setUserid(user.getId());
+        salesRecord.setPayCost(totalPrice);
+        salesRecord.setPayTime(DateUtils.getDate(new Date()));
+        try{
+                DataBaseManager.getSalesRecordDAO().insert(salesRecord,true);
+        }catch (Exception e) {
+            System.out.println("Failed to add new SalesRecord: "+e.getMessage());
+            System.out.println("Please try again");
+        }
     }
+
 
     /**
      * Insert a new food

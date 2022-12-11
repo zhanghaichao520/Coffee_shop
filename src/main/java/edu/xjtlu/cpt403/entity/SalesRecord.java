@@ -1,22 +1,43 @@
 package edu.xjtlu.cpt403.entity;
 
 
+import edu.xjtlu.cpt403.database.DataBaseManager;
+import edu.xjtlu.cpt403.database.SalesRecordDAO;
+import edu.xjtlu.cpt403.util.DateUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class SalesRecord {
 
-    /** 购买记录ID */
+    /**
+     * 购买记录ID
+     */
     private int id;
-    /** 购买的商品ID */
+    /**
+     * 购买的商品ID
+     */
     private int productID;
-    /** 购买的商品名称 */
+    /**
+     * 购买的商品名称
+     */
     private String productName;
-    /** 购买的商品数量 */
+    /**
+     * 购买的商品数量
+     */
     private int buyNumber;
-    /** 购买顾客的ID */
+    /**
+     * 购买顾客的ID
+     */
     private int userid;
-    /** 购买花费的金额 */
+    /**
+     * 购买花费的金额
+     */
     private double payCost;
-    /** 购买时间(日期) */
+    /**
+     * 购买时间(日期)
+     */
     private String payTime;
 
     public int getId() {
@@ -74,6 +95,20 @@ public class SalesRecord {
     public void setPayTime(String payTime) {
         this.payTime = payTime;
     }
+
+    public SalesRecord() {
+    }
+
+    public SalesRecord(int id, int productID, String productName, int buyNumber, int userid, double payCost, String payTime) {
+        this.id = id;
+        this.productID = productID;
+        this.productName = productName;
+        this.buyNumber = buyNumber;
+        this.userid = userid;
+        this.payCost = payCost;
+        this.payTime = payTime;
+    }
+
 
     @Override
     public String toString() {
