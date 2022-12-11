@@ -1,6 +1,5 @@
 package edu.xjtlu.cpt403.userinterface;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import edu.xjtlu.cpt403.database.CustomerDAO;
 import edu.xjtlu.cpt403.database.DataBaseManager;
 import edu.xjtlu.cpt403.entity.Customer;
@@ -18,8 +17,8 @@ public class CustomerUI {
      * 登录流程
      */
     public static void login() throws Exception {
-        String username = getStringInput("Please input your username", s -> User.validateName(s));
-        String password = getStringInput("Please input your password", s -> User.validatePassword(s));
+        String username = getStringInput("Please input your username", User::validateName);
+        String password = getStringInput("Please input your password", User::validatePassword);
 
         try {
             Customer.validateLogin(username, password, DataBaseManager.getCustomerDAO());
