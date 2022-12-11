@@ -22,7 +22,7 @@ public class SalesRecordUI {
      * 3.Data displayed in the statistics table:
      *   id, product id, product name, sales number,  sales amount, payTime
      * 4.The statistics table for each dimension is preceded by the amount statistics and customer statistics
-     *
+     * **
      * 新增销售记录查看功能，默认管理员权限
      *  1. 展示销售记录统计表
      *  2. 统计表分为<当日><本周><本月>三种类型，管理员可以选择查看其中任意一种
