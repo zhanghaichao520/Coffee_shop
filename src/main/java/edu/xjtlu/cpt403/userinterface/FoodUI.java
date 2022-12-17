@@ -89,7 +89,7 @@ public class FoodUI {
                     break;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }while (true);
 
@@ -126,7 +126,6 @@ public class FoodUI {
                         stockAvailable + " " + foodName + end +
                         ", because there are only"+stockAvailable+" in stock, " +
                         "please re-enter the purchase number:");
-                continue;
             }else {
                 break;
             }
@@ -176,7 +175,7 @@ public class FoodUI {
                     try {
                         freeDrink = DataBaseManager.getDrinkDAO().select(666);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        System.out.println(e.getMessage());
                     }
                     int stockDrink = freeDrink.getStockAvailable();
                     int sellAmountDrink = freeDrink.getSellAmount();

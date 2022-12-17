@@ -108,7 +108,7 @@ public class RoomUI {
             System.out.println("Room Reservation Failed: " + e.getMessage());
             System.out.println("Please try agagin!");
         } finally {
-            System.out.println("Congratulations, room reservation success, your reservation information is: " + room);
+            System.out.println("Congratulations! Reservation success! \n Your reservation information is: " + room);
             System.out.println("=============================================================");
         }
     }
@@ -160,9 +160,8 @@ public class RoomUI {
             if (CollectionUtils.isEmpty(showList)) {
                 System.out.println("No room information was found!");
             } else {
-                int idx = 1;
                 for (Room room : showList) {
-                    System.out.println((idx ++ ) + ":" + room);
+                    System.out.println(room);
                 }
             }
 
@@ -252,7 +251,7 @@ public class RoomUI {
             System.out.println(room + "cancel reservation failed: " + e.getMessage());
             System.out.println("Please try again!");
         } finally {
-            System.out.println("newReservation room end, result: " + room.toString());
+            System.out.println("cancel reservation room success, cancel room information: " + room);
             System.out.println("=============================================================");
         }
 
