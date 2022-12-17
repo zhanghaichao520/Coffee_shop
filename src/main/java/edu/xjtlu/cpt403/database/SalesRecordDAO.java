@@ -63,7 +63,7 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-        }).collect(Collectors.collect(Collectors.toList()));
+        }).collect(Collectors.toList());
     }
 
 
