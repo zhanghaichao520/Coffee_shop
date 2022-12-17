@@ -115,7 +115,7 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
                 throw new RuntimeException(e);
             }
             return id == salesrecord.getId() && id > 0;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(rowDataList)) {
             return 0;
