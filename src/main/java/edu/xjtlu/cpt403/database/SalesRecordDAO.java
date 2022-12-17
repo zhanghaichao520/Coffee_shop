@@ -63,7 +63,7 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-        }).collect(Collectors.toList());
+        }).collect(Collectors.collect(Collectors.toList()));
     }
 
 
@@ -92,7 +92,7 @@ public class SalesRecordDAO extends AbstractDataBase<SalesRecord> {
                 throw new RuntimeException(e);
             }
             return id == salesrecord.getId() && id > 0;
-        }).map(RowData::getRowIndex).toList());
+        }).map(RowData::getRowIndex).collect(Collectors.toList()));
 
         // 要从后往前删除，要不然前面的删了之后， 后面的记录就会顶上来， 到时候row index就变了
         rowIndexList.sort(Comparator.reverseOrder());
