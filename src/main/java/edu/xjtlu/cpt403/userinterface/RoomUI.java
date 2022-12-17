@@ -251,7 +251,7 @@ public class RoomUI {
             System.out.println(room + "cancel reservation failed: " + e.getMessage());
             System.out.println("Please try again!");
         } finally {
-            System.out.println("newReservation room end, result: " + room.toString());
+            System.out.println("cancel reservation room success, cancel room information: " + room);
             System.out.println("=============================================================");
         }
 
