@@ -53,7 +53,6 @@ public class DrinkUI {
      * 6.feedback
      */
     public static void buyDrink(){
-        queryDrink();
         User user = UserInterfaceUtils.getCurrentUser();
 
         /**
